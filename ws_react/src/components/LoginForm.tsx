@@ -1,0 +1,76 @@
+import { useState } from 'react';
+import { User } from 'lucide-react';
+
+interface LoginFormProps {
+    onLogin: (username: string, displayName: string) => void;
+}
+
+export function LoginForm({ onLogin }: LoginFormProps) {
+    const [username, setUsername] = useState('');
+    const [displayName, setDisplayName] = useState('');
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (username.trim() && displayName.trim()) {
+            onLogin(username.trim(), displayName.trim());
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center px-4">
+            <div className="bg-[#1A1A1A] rounded-2xl p-8 w-full max-w-md border border-[#2A2A2A]">
+                <div className="flex items-center justify-center mb-6">
+                    <div className="bg-[#3A86FF] p-4 rounded-full">
+                        <User className="w-8 h-8 text-[#E0E0E0]" />
+                    </div>
+                </div>
+
+                <h1 className="text-2xl font-bold text-[#E0E0E0] text-center mb-2">
+                    Entrar no Chat
+                </h1>
+                <p className="text-[#A0A0A0] text-center mb-8">
+                    Digite suas informações para começar
+                </p>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label htmlFor="username" className="block text-sm font-medium text-[#E0E0E0] mb-2">
+                            Nome de usuário
+                        </label>
+                        <input
+                            type="text"
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:outline-none focus:border-[#3A86FF] focus:ring-1 focus:ring-[#3A86FF] transition-colors"
+                            placeholder="usuario123"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="displayName" className="block text-sm font-medium text-[#E0E0E0] mb-2">
+                            Nome de exibição
+                        </label>
+                        <input
+                            type="text"
+                            id="displayName"
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:outline-none focus:border-[#3A86FF] focus:ring-1 focus:ring-[#3A86FF] transition-colors"
+                            placeholder="Seu Nome"
+                            required
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-[#3A86FF] hover:bg-[#2E6FCC] text-[#E0E0E0] font-semibold py-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#3A86FF] focus:ring-offset-2 focus:ring-offset-[#1A1A1A]"
+                    >
+                        Entrar
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
