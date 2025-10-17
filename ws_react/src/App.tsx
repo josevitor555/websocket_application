@@ -146,14 +146,14 @@ function App() {
           console.error('Error updating user:', updateError);
           return;
         }
-        
+
         // Refresh user data after update
         const { data: updatedUser } = await supabase
           .from('chat_users')
           .select('*')
           .eq('id', existingUser.id)
           .single();
-        
+
         if (updatedUser) {
           user = updatedUser;
         }
@@ -172,12 +172,12 @@ function App() {
           console.error('Failed to create user:', insertError);
           return;
         }
-        
+
         if (!newUser) {
           console.error('Failed to create user - no data returned');
           return;
         }
-        
+
         user = newUser;
       }
 
@@ -196,7 +196,7 @@ function App() {
           .from('chat_users')
           .update({ is_online: false, last_seen: new Date().toISOString() })
           .eq('id', currentUser.id);
-      
+
         if (error) {
           console.error('Error updating user status on logout:', error);
         }
