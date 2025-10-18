@@ -41,9 +41,17 @@ class AuthController {
         last_activity: new Date().toISOString(),
       });
 
+      // Retornar a estrutura esperada pelo frontend
       res.status(HTTP_STATUS.OK).json({
-        user,
-        sessionToken,
+        user: {
+          id: user.id,
+          username: user.username,
+          display_name: user.display_name,
+          is_online: user.is_online,
+          last_seen: user.last_seen,
+          created_at: user.created_at
+        },
+        sessionToken: sessionToken,
         message: MESSAGES.LOGIN_SUCCESS
       });
     } catch (error) {

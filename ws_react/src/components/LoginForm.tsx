@@ -1,18 +1,23 @@
 import { useState } from 'react';
 import { User } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
-interface LoginFormProps {
-    onLogin: (username: string, displayName: string) => void;
-}
-
-export function LoginForm({ onLogin }: LoginFormProps) {
+export function LoginForm() {
+    const { login, loading, error } = useAuth();
     const [username, setUsername] = useState('');
     const [displayName, setDisplayName] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (username.trim() && displayName.trim()) {
-            onLogin(username.trim(), displayName.trim());
+        
+        if (!username.trim() || !displayName.trim()) {
+            return;
+        }
+
+        try {
+            await login(username.trim(), displayName.trim());
+        } catch (err) {
+            console.error('Login error:', err);
         }
     };
 
@@ -32,6 +37,12 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                     Digite suas informações para começar
                 </p>
 
+                {error && (
+                    <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-200 text-sm">
+                        {error}
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="username" className="block text-base font-medium text-[#E0E0E0] mb-2">
@@ -42,9 +53,10 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                             id="username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0]"
+                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#3A86FF] focus:outline-none"
                             placeholder="usuario123"
                             required
+                            disabled={loading}
                         />
                     </div>
 
@@ -57,17 +69,19 @@ export function LoginForm({ onLogin }: LoginFormProps) {
                             id="displayName"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0]"
+                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#3A86FF] focus:outline-none"
                             placeholder="Seu Nome para Exibição no Chat"
                             required
+                            disabled={loading}
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full bg-background text-[#222222] font-semibold py-3 rounded-full"
+                        className="w-full bg-background text-[#222222] font-semibold py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                        disabled={loading}
                     >
-                        Entrar
+                        {loading ? 'Entrando...' : 'Entrar'}
                     </button>
                 </form>
             </div>

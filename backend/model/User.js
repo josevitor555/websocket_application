@@ -1,10 +1,21 @@
 import { supabase } from '../db/supabaseClient.js';
+import { randomUUID } from 'crypto';
 
 class User {
   static async create(userData) {
+    // Remover is_online e id do objeto userData para evitar erros de constraint
+    const { is_online, id, ...userDataWithoutId } = userData;
+    
+    // Adicionar um ID gerado explicitamente
+    const userDataWithId = {
+      id: randomUUID(),
+      ...userDataWithoutId,
+      is_online: true // Definir is_online como true explicitamente
+    };
+    
     const { data, error } = await supabase
       .from('chat_users')
-      .insert(userData)
+      .insert(userDataWithId)
       .select()
       .single();
 
@@ -44,9 +55,12 @@ class User {
   }
 
   static async update(id, userData) {
+    // Remover id do objeto userData se estiver presente
+    const { id: userId, ...updateData } = userData;
+    
     const { data, error } = await supabase
       .from('chat_users')
-      .update(userData)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();

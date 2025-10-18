@@ -1,10 +1,20 @@
 import { supabase } from '../db/supabaseClient.js';
+import { randomUUID } from 'crypto';
 
 class Session {
   static async create(sessionData) {
+    // Remover o campo id do sessionData se estiver presente
+    const { id, ...sessionDataWithoutId } = sessionData;
+    
+    // Adicionar um ID gerado explicitamente
+    const sessionDataWithId = {
+      id: randomUUID(),
+      ...sessionDataWithoutId
+    };
+    
     const { data, error } = await supabase
       .from('chat_sessions')
-      .upsert(sessionData)
+      .upsert(sessionDataWithId)
       .select()
       .single();
 

@@ -5,13 +5,13 @@ import { UserList } from './components/UserList';
 import { ChatInput } from './components/ChatInput';
 import { ConnectionStatus } from './components/ConnectionStatus';
 import { useWebSocket } from './hooks/useWebSocket';
-import { supabase } from './lib/supabase';
+import { useAuth } from './hooks/useAuth';
+import { userService, messageService } from './lib/api';
 import type { ChatMessage as ChatMessageType, ChatUser } from '../types/chat';
 import { MessageSquare, LogOut } from 'lucide-react';
 
 function App() {
-  const [currentUser, setCurrentUser] = useState<ChatUser | null>(null);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const { currentUser, sessionToken, logout } = useAuth();
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [typingUser, setTypingUser] = useState<string | null>(null);
@@ -81,23 +81,20 @@ function App() {
     const loadInitialData = async () => {
       if (!currentUser) return;
 
-      const { data: messagesData } = await supabase
-        .from('chat_messages')
-        .select('*, chat_users(*)')
-        .order('created_at', { ascending: true })
-        .limit(100);
+      try {
+        // Carregar histórico de mensagens
+        const messagesData = await messageService.getHistory(100);
+        if (messagesData) {
+          setMessages(messagesData);
+        }
 
-      if (messagesData) {
-        setMessages(messagesData);
-      }
-
-      const { data: usersData } = await supabase
-        .from('chat_users')
-        .select('*')
-        .eq('is_online', true);
-
-      if (usersData) {
-        setUsers(usersData);
+        // Carregar usuários online
+        const usersData = await userService.getOnlineUsers();
+        if (usersData) {
+          setUsers(usersData);
+        }
+      } catch (error) {
+        console.error('Error loading initial data:', error);
       }
     };
 
@@ -107,108 +104,6 @@ function App() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  const handleLogin = async (username: string, displayName: string) => {
-    try {
-      // First, let's check if we can access the database
-      const { error: testError } = await supabase
-        .from('chat_users')
-        .select('id')
-        .limit(1);
-
-      if (testError && testError.message.includes('401')) {
-        console.error('Authentication error. Check your Supabase credentials.');
-        console.error('Make sure your Supabase project has the correct anon key configured.');
-        return;
-      }
-
-      const { data: existingUser, error: selectError } = await supabase
-        .from('chat_users')
-        .select('*')
-        .eq('username', username)
-        .maybeSingle();
-
-      if (selectError) {
-        console.error('Error checking existing user:', selectError);
-        return;
-      }
-
-      let user: ChatUser;
-
-      if (existingUser) {
-        user = existingUser;
-        const { error: updateError } = await supabase
-          .from('chat_users')
-          .update({ display_name: displayName, is_online: true })
-          .eq('id', existingUser.id);
-
-        if (updateError) {
-          console.error('Error updating user:', updateError);
-          return;
-        }
-
-        // Refresh user data after update
-        const { data: updatedUser } = await supabase
-          .from('chat_users')
-          .select('*')
-          .eq('id', existingUser.id)
-          .single();
-
-        if (updatedUser) {
-          user = updatedUser;
-        }
-      } else {
-        const { data: newUser, error: insertError } = await supabase
-          .from('chat_users')
-          .insert({
-            username,
-            display_name: displayName,
-            is_online: true
-          })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error('Failed to create user:', insertError);
-          return;
-        }
-
-        if (!newUser) {
-          console.error('Failed to create user - no data returned');
-          return;
-        }
-
-        user = newUser;
-      }
-
-      const token = `${user.id}_${Date.now()}`;
-      setCurrentUser(user);
-      setSessionToken(token);
-    } catch (error) {
-      console.error('Unexpected error during login:', error);
-    }
-  };
-
-  const handleLogout = async () => {
-    if (currentUser) {
-      try {
-        const { error } = await supabase
-          .from('chat_users')
-          .update({ is_online: false, last_seen: new Date().toISOString() })
-          .eq('id', currentUser.id);
-
-        if (error) {
-          console.error('Error updating user status on logout:', error);
-        }
-      } catch (error) {
-        console.error('Unexpected error during logout:', error);
-      }
-    }
-    setCurrentUser(null);
-    setSessionToken(null);
-    setMessages([]);
-    setUsers([]);
-  };
 
   const handleSendMessage = (message: string) => {
     if (!isConnected) return;
@@ -227,7 +122,7 @@ function App() {
   };
 
   if (!currentUser) {
-    return <LoginForm onLogin={handleLogin} />;
+    return <LoginForm />;
   }
 
   return (
@@ -236,8 +131,8 @@ function App() {
         <header className="bg-[#1A1A1A] rounded-2xl p-4 mb-6 border border-[#2A2A2A]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-[#3A86FF] p-2 rounded-lg">
-                <MessageSquare className="w-6 h-6 text-[#E0E0E0]" />
+              <div className="bg-background p-2 rounded-lg">
+                <MessageSquare className="w-6 h-6 text-[#2A2A2A]" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-[#E0E0E0]">Chat em Tempo Real</h1>
@@ -253,8 +148,8 @@ function App() {
                 onReconnect={reconnect}
               />
               <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-[#121212] hover:bg-[#EF4444] text-[#E0E0E0] rounded-lg transition-colors border border-[#2A2A2A] hover:border-[#EF4444]"
+                onClick={logout}
+                className="flex items-center gap-2 px-4 py-2 bg-background hover:bg-background text-[#121212] rounded-lg transition-colors border border-[#2A2A2A]"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden sm:inline">Sair</span>

@@ -36,7 +36,7 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
             <button
                 type="submit"
                 disabled={!message.trim() || disabled}
-                className="bg-[#3A86FF] hover:bg-[#2E6FCC] text-[#E0E0E0] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#3A86FF] focus:ring-offset-2 focus:ring-offset-[#0D0D0D]"
+                className="bg-background text-[#121212] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#3A86FF] focus:ring-offset-2 focus:ring-offset-[#0D0D0D]"
             >
                 <Send className="w-5 h-5" />
             </button>
