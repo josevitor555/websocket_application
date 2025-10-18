@@ -5,14 +5,16 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "types": ["./deno.d.ts"],
+    "types": ["supabase-deps.d.ts"],
     "lib": ["ES2020", "WebWorker"],
     "skipLibCheck": true,
     "noEmit": true,
-    "typeRoots": ["./", "../../../node_modules/@types"]
+    "typeRoots": ["../", "../../../node_modules/@types"],
+    "allowImportingTsExtensions": true
   },
   "include": [
     "*.ts",
+    "supabase-deps.d.ts",
     "deno.d.ts"
   ]
 }

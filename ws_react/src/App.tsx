@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { LoginForm } from './components/LoginForm';
 import { ChatMessage } from './components/ChatMessage';
 import { UserList } from './components/UserList';
@@ -10,7 +11,7 @@ import { userService, messageService } from './lib/api';
 import type { ChatMessage as ChatMessageType, ChatUser } from '../types/chat';
 import { MessageSquare, LogOut } from 'lucide-react';
 
-function App() {
+function ChatApp() {
   const { currentUser, sessionToken, logout } = useAuth();
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [users, setUsers] = useState<ChatUser[]>([]);
@@ -19,7 +20,7 @@ function App() {
   const typingTimeoutRef = useRef<number | null>(null);
 
   const wsUrl = sessionToken && currentUser
-    ? `${import.meta.env.VITE_SUPABASE_URL.replace('https://', 'wss://')}/functions/v1/chat-websocket?session=${sessionToken}&userId=${currentUser.id}`
+    ? `${import.meta.env.VITE_SUPABASE_URL.replace('https://', 'wss://')}/functions/v1/chat-websocket?session=${encodeURIComponent(sessionToken)}&userId=${encodeURIComponent(currentUser.id)}`
     : '';
 
   const handleWebSocketMessage = useCallback((message: any) => {
@@ -122,13 +123,14 @@ function App() {
   };
 
   if (!currentUser) {
+    // Redirecionar para a página de login se não estiver autenticado
     return <LoginForm />;
   }
 
   return (
     <div className="min-h-screen bg-[#0D0D0D]">
       <div className="container mx-auto px-4 py-6 h-screen flex flex-col">
-        <header className="bg-[#1A1A1A] rounded-2xl p-4 mb-6 border border-[#2A2A2A]">
+        <header className="bg-transparent rounded-2xl p-4 mb-6 border border-[#2A2A2A]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-background p-2 rounded-lg">
@@ -149,7 +151,7 @@ function App() {
               />
               <button
                 onClick={logout}
-                className="flex items-center gap-2 px-4 py-2 bg-background hover:bg-background text-[#121212] rounded-lg transition-colors border border-[#2A2A2A]"
+                className="flex items-center gap-2 px-4 py-2 bg-[#121212] hover:bg-[#EF4444] text-[#E0E0E0] rounded-lg transition-colors border border-[#2A2A2A] hover:border-[#EF4444]"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden sm:inline">Sair</span>
@@ -159,7 +161,7 @@ function App() {
         </header>
 
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-0">
-          <div className="lg:col-span-3 flex flex-col bg-[#1A1A1A] rounded-2xl border border-[#2A2A2A] overflow-hidden">
+          <div className="lg:col-span-3 flex flex-col bg-transparent rounded-2xl border border-[#2A2A2A] overflow-hidden">
             <div className="flex-1 overflow-y-auto p-6 space-y-1">
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
@@ -202,6 +204,17 @@ function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+function App() {
+  const navigate = useNavigate();
+  
+  return (
+    <Routes>
+      <Route path="/" element={<ChatApp />} />
+      <Route path="/login" element={<LoginForm />} />
+    </Routes>
   );
 }
 

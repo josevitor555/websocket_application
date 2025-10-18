@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authService } from '../lib/api';
 import type { ChatUser } from '../../types/chat';
 
@@ -16,6 +17,7 @@ export function useAuth(): UseAuthReturn {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Verificar se há uma sessão armazenada no localStorage
   useEffect(() => {
@@ -50,6 +52,9 @@ export function useAuth(): UseAuthReturn {
       // Armazenar no localStorage
       localStorage.setItem('chatUser', JSON.stringify(session.user));
       localStorage.setItem('sessionToken', session.sessionToken);
+      
+      // Redirecionar para a página principal após o login
+      navigate('/');
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message || 'Falha ao realizar login');
@@ -77,6 +82,9 @@ export function useAuth(): UseAuthReturn {
     // Remover do localStorage
     localStorage.removeItem('chatUser');
     localStorage.removeItem('sessionToken');
+    
+    // Redirecionar para a página de login após o logout
+    navigate('/login');
   };
 
   return {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -6,6 +7,7 @@ export function LoginForm() {
     const { login, loading, error } = useAuth();
     const [username, setUsername] = useState('');
     const [displayName, setDisplayName] = useState('');
+    // const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -16,6 +18,7 @@ export function LoginForm() {
 
         try {
             await login(username.trim(), displayName.trim());
+            // O redirecionamento agora é feito no hook useAuth
         } catch (err) {
             console.error('Login error:', err);
         }
