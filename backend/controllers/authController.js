@@ -88,6 +88,46 @@ class AuthController {
       });
     }
   }
+
+  static async verifySession(req, res) {
+    try {
+      const { userId, sessionToken } = req.body;
+
+      if (!userId || !sessionToken) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ 
+          error: MESSAGES.MISSING_FIELDS 
+        });
+      }
+
+      // Verificar sessão no banco de dados
+      const session = await Session.findByToken(sessionToken);
+
+      if (!session || session.user_id !== userId) {
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({ 
+          error: 'Invalid session' 
+        });
+      }
+
+      // Verificar se o usuário existe
+      const user = await User.findById(userId);
+      
+      if (!user) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({ 
+          error: 'User not found' 
+        });
+      }
+
+      res.status(HTTP_STATUS.OK).json({ 
+        message: 'Session valid',
+        user: user
+      });
+    } catch (error) {
+      console.error('Session verification error:', error);
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ 
+        error: MESSAGES.INTERNAL_ERROR 
+      });
+    }
+  }
 }
 
 export default AuthController;

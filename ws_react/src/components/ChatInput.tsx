@@ -31,12 +31,12 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
                 onChange={handleChange}
                 disabled={disabled}
                 placeholder="Digite sua mensagem..."
-                className="flex-1 px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#E0E0E0] placeholder-[#A0A0A0] focus:outline-none focus:border-[#3A86FF] focus:ring-1 focus:ring-[#3A86FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#E0E0E0] placeholder-[#A0A0A0]"
             />
             <button
                 type="submit"
                 disabled={!message.trim() || disabled}
-                className="bg-background text-[#121212] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#3A86FF] focus:ring-offset-2 focus:ring-offset-[#0D0D0D]"
+                className="bg-background text-[#121212] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
             >
                 <Send className="w-5 h-5" />
             </button>

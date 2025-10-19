@@ -15,25 +15,51 @@ interface UseAuthReturn {
 export function useAuth(): UseAuthReturn {
   const [currentUser, setCurrentUser] = useState<ChatUser | null>(null);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Inicia como true para indicar que está carregando
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Verificar se há uma sessão armazenada no localStorage
   useEffect(() => {
-    const storedUser = localStorage.getItem('chatUser');
-    const storedToken = localStorage.getItem('sessionToken');
-    
-    if (storedUser && storedToken) {
-      try {
-        setCurrentUser(JSON.parse(storedUser));
-        setSessionToken(storedToken);
-      } catch (err) {
-        console.error('Error parsing stored user data:', err);
-        localStorage.removeItem('chatUser');
-        localStorage.removeItem('sessionToken');
+    // Simular um pequeno delay para garantir que o loading seja visível
+    const timer = setTimeout(async () => {
+      const storedUser = localStorage.getItem('chatUser');
+      const storedToken = localStorage.getItem('sessionToken');
+      
+      if (storedUser && storedToken) {
+        try {
+          const user = JSON.parse(storedUser);
+          
+          // Verificar se a sessão ainda é válida no backend
+          try {
+            const response = await authService.verifySession({
+              userId: user.id,
+              sessionToken: storedToken
+            });
+            
+            // Sessão válida, atualizar dados do usuário
+            setCurrentUser(response.user);
+            setSessionToken(storedToken);
+            
+            // Atualizar localStorage com dados atualizados
+            localStorage.setItem('chatUser', JSON.stringify(response.user));
+          } catch (err) {
+            console.error('Session verification failed:', err);
+            // Sessão inválida, limpar dados
+            localStorage.removeItem('chatUser');
+            localStorage.removeItem('sessionToken');
+          }
+        } catch (err) {
+          console.error('Error parsing or verifying stored user data:', err);
+          localStorage.removeItem('chatUser');
+          localStorage.removeItem('sessionToken');
+        }
       }
-    }
+      // Finaliza o carregamento após verificar o localStorage
+      setLoading(false);
+    }, 100); // Pequeno delay para garantir visibilidade do loading
+
+    return () => clearTimeout(timer);
   }, []);
 
   const login = async (username: string, displayName: string) => {

@@ -76,6 +76,14 @@ export const authService = {
       body: JSON.stringify(logoutData),
     });
   },
+  
+  // Verificação de sessão
+  async verifySession(verifyData: { userId: string; sessionToken: string }): Promise<{ message: string; user: User }> {
+    return apiRequest<{ message: string; user: User }>('/api/auth/verify', {
+      method: 'POST',
+      body: JSON.stringify(verifyData),
+    });
+  },
 };
 
 // Serviço de usuários

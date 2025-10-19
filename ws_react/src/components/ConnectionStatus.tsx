@@ -18,7 +18,7 @@ export function ConnectionStatus({ isConnected, reconnectAttempt, onReconnect }:
 
     return (
         <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-background text-sm">
+            <div className="flex items-center gap-2 text-[#EF4444] text-sm">
                 <WifiOff className="w-4 h-4" />
                 <span>
                     {reconnectAttempt > 0 ? `Reconectando... (${reconnectAttempt})` : 'Desconectado'}
@@ -26,8 +26,9 @@ export function ConnectionStatus({ isConnected, reconnectAttempt, onReconnect }:
             </div>
             <button
                 onClick={onReconnect}
-                className="text-background hover:text-background transition-colors p-1 rounded"
+                className="text-[#A0A0A0] hover:text-[#E0E0E0] transition-colors p-1 rounded"
                 title="Reconectar"
+                aria-label="Reconectar"
             >
                 <RefreshCw className="w-4 h-4" />
             </button>

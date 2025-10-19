@@ -5,79 +5,116 @@ import { ChatMessage } from './components/ChatMessage';
 import { UserList } from './components/UserList';
 import { ChatInput } from './components/ChatInput';
 import { ConnectionStatus } from './components/ConnectionStatus';
-import { useWebSocket } from './hooks/useWebSocket';
+import { LoadingSpinner } from './components/LoadingSpinner';
 import { useAuth } from './hooks/useAuth';
 import { userService, messageService } from './lib/api';
 import type { ChatMessage as ChatMessageType, ChatUser } from '../types/chat';
 import { MessageSquare, LogOut } from 'lucide-react';
+import { io, Socket } from 'socket.io-client';
 
 function ChatApp() {
-  const { currentUser, sessionToken, logout } = useAuth();
+  const { currentUser, sessionToken, logout, loading } = useAuth();
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [typingUser, setTypingUser] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [reconnectAttempt, setReconnectAttempt] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<number | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
-  const wsUrl = sessionToken && currentUser
-    ? `${import.meta.env.VITE_SUPABASE_URL.replace('https://', 'wss://')}/functions/v1/chat-websocket?session=${encodeURIComponent(sessionToken)}&userId=${encodeURIComponent(currentUser.id)}`
-    : '';
+  // Initialize WebSocket connection
+  useEffect(() => {
+    if (!currentUser || !sessionToken) return;
 
-  const handleWebSocketMessage = useCallback((message: any) => {
-    switch (message.type) {
-      case 'connected':
-        console.log('WebSocket connected:', message);
-        break;
+    // Create WebSocket connection to local server
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const socket = io(backendUrl, {
+      transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 3000,
+    });
 
-      case 'new_message':
-        setMessages((prev) => [...prev, message.message]);
-        break;
+    socketRef.current = socket;
 
-      case 'user_joined':
-        if (message.user) {
-          setUsers((prev) => {
-            const existing = prev.find(u => u.id === message.user.id);
-            if (existing) {
-              return prev.map(u => u.id === message.user.id ? message.user : u);
-            }
-            return [...prev, message.user];
-          });
+    socket.on('connect', () => {
+      console.log('[Socket.IO] Connected with ID:', socket.id);
+      setIsConnected(true);
+      setReconnectAttempt(0);
+      
+      // Authenticate with the server
+      console.log('[Socket.IO] Authenticating with token:', sessionToken);
+      socket.emit('authenticate', {
+        sessionToken,
+        userId: currentUser.id
+      });
+    });
+
+    socket.on('authenticated', (data) => {
+      console.log('[Socket.IO] Authenticated:', data);
+    });
+
+    socket.on('auth_error', (error) => {
+      console.error('[Socket.IO] Authentication error:', error);
+      // Se houver erro de autenticação, fazer logout
+      logout();
+    });
+
+    socket.on('new_message', (message) => {
+      console.log('[App] Received message:', message);
+      
+      // Verificar se a mensagem tem os campos obrigatórios
+      if (message && message.id) {
+        setMessages((prev) => [...prev, message]);
+      } else {
+        console.warn('[App] Received message without valid ID:', message);
+        // Mesmo se não tiver ID, podemos criar uma chave temporária para exibição
+        if (message && message.message) {
+          // Adicionar uma chave temporária para evitar o erro de React
+          const messageWithTempId = {
+            ...message,
+            id: message.id || `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            created_at: message.created_at || new Date().toISOString()
+          };
+          setMessages((prev) => [...prev, messageWithTempId]);
         }
-        break;
+      }
+    });
 
-      case 'user_left':
-        if (message.user) {
-          setUsers((prev) => prev.map(u =>
-            u.id === message.user.id ? { ...u, is_online: false } : u
-          ));
+    socket.on('users_updated', (users) => {
+      console.log('[App] Users updated:', users);
+      setUsers(users);
+    });
+
+    socket.on('user_typing', (data) => {
+      if (data.userId !== currentUser?.id) {
+        setTypingUser(data.username);
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
         }
-        break;
+        typingTimeoutRef.current = window.setTimeout(() => {
+          setTypingUser(null);
+        }, 3000);
+      }
+    });
 
-      case 'user_typing':
-        if (message.userId !== currentUser?.id) {
-          setTypingUser(message.username);
-          if (typingTimeoutRef.current) {
-            clearTimeout(typingTimeoutRef.current);
-          }
-          typingTimeoutRef.current = window.setTimeout(() => {
-            setTypingUser(null);
-          }, 3000);
-        }
-        break;
-    }
-  }, [currentUser?.id]);
+    socket.on('connect_error', (error) => {
+      console.error('[Socket.IO] Connection error:', error);
+      setIsConnected(false);
+    });
 
-  const { isConnected, sendMessage, reconnect, reconnectAttempt } = useWebSocket({
-    url: wsUrl,
-    onMessage: handleWebSocketMessage,
-    onOpen: () => {
-      console.log('WebSocket connection opened');
-    },
-    onClose: () => {
-      console.log('WebSocket connection closed');
-    },
-  });
+    socket.on('disconnect', (reason) => {
+      console.log('[Socket.IO] Disconnected:', reason);
+      setIsConnected(false);
+    });
 
+    return () => {
+      socket.close();
+    };
+  }, [currentUser, sessionToken]);
+
+  // Load initial data
   useEffect(() => {
     const loadInitialData = async () => {
       if (!currentUser) return;
@@ -86,7 +123,9 @@ function ChatApp() {
         // Carregar histórico de mensagens
         const messagesData = await messageService.getHistory(100);
         if (messagesData) {
-          setMessages(messagesData);
+          // Filtrar mensagens para garantir que todas tenham ID válido
+          const validMessages = messagesData.filter(msg => msg && msg.id);
+          setMessages(validMessages);
         }
 
         // Carregar usuários online
@@ -107,20 +146,31 @@ function ChatApp() {
   }, [messages]);
 
   const handleSendMessage = (message: string) => {
-    if (!isConnected) return;
-    sendMessage({
-      type: 'message',
+    if (!isConnected || !socketRef.current) return;
+    
+    socketRef.current.emit('send_message', {
       message,
     });
   };
 
   const handleTyping = () => {
-    if (!isConnected || !currentUser) return;
-    sendMessage({
-      type: 'typing',
+    if (!isConnected || !currentUser || !socketRef.current) return;
+    
+    socketRef.current.emit('typing', {
       username: currentUser.display_name,
     });
   };
+
+  const handleReconnect = () => {
+    if (socketRef.current) {
+      socketRef.current.connect();
+    }
+  };
+
+  // Mostrar um indicador de carregamento enquanto verifica a autenticação
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   if (!currentUser) {
     // Redirecionar para a página de login se não estiver autenticado
@@ -147,7 +197,7 @@ function ChatApp() {
               <ConnectionStatus
                 isConnected={isConnected}
                 reconnectAttempt={reconnectAttempt}
-                onReconnect={reconnect}
+                onReconnect={handleReconnect}
               />
               <button
                 onClick={logout}
@@ -172,7 +222,7 @@ function ChatApp() {
               ) : (
                 messages.map((message) => (
                   <ChatMessage
-                    key={message.id}
+                    key={message.id || `temp-${message.created_at}-${message.message.substring(0, 10)}`}
                     message={message}
                     isOwnMessage={message.user_id === currentUser.id}
                   />
@@ -209,7 +259,7 @@ function ChatApp() {
 
 function App() {
   const navigate = useNavigate();
-  
+
   return (
     <Routes>
       <Route path="/" element={<ChatApp />} />

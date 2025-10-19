@@ -26,7 +26,7 @@ export function LoginForm() {
 
     return (
         <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center px-4">
-            <div className="bg-[#1A1A1A] rounded-2xl p-8 w-full max-w-md border border-[#2A2A2A]">
+            <div className="bg-transparent rounded-2xl p-8 w-full max-w-md border border-[#2A2A2A]">
                 <div className="flex items-center justify-center mb-6">
                     <div className="bg-background p-4 rounded-full">
                         <User className="w-8 h-8 text-[#222222]" />
@@ -56,7 +56,7 @@ export function LoginForm() {
                             id="username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#3A86FF] focus:outline-none"
+                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#E0E0E0] focus:outline-none"
                             placeholder="usuario123"
                             required
                             disabled={loading}
@@ -72,7 +72,7 @@ export function LoginForm() {
                             id="displayName"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#3A86FF] focus:outline-none"
+                            className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#E0E0E0] focus:outline-none"
                             placeholder="Seu Nome para Exibição no Chat"
                             required
                             disabled={loading}
