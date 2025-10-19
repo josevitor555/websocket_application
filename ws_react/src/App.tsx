@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { LoginForm } from './components/LoginForm';
 import { ChatMessage } from './components/ChatMessage';
 import { UserList } from './components/UserList';
+import { LLMList } from './components/LLMList';
 import { ChatInput } from './components/ChatInput';
 import { ConnectionStatus } from './components/ConnectionStatus';
 import { LoadingSpinner } from './components/LoadingSpinner';
@@ -42,7 +43,7 @@ function ChatApp() {
       console.log('[Socket.IO] Connected with ID:', socket.id);
       setIsConnected(true);
       setReconnectAttempt(0);
-      
+
       // Authenticate with the server
       console.log('[Socket.IO] Authenticating with token:', sessionToken);
       socket.emit('authenticate', {
@@ -63,7 +64,7 @@ function ChatApp() {
 
     socket.on('new_message', (message) => {
       console.log('[App] Received message:', message);
-      
+
       // Verificar se a mensagem tem os campos obrigatórios
       if (message && message.id) {
         setMessages((prev) => [...prev, message]);
@@ -147,7 +148,7 @@ function ChatApp() {
 
   const handleSendMessage = (message: string) => {
     if (!isConnected || !socketRef.current) return;
-    
+
     socketRef.current.emit('send_message', {
       message,
     });
@@ -155,7 +156,7 @@ function ChatApp() {
 
   const handleTyping = () => {
     if (!isConnected || !currentUser || !socketRef.current) return;
-    
+
     socketRef.current.emit('typing', {
       username: currentUser.display_name,
     });
@@ -179,8 +180,8 @@ function ChatApp() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D]">
-      <div className="container mx-auto px-4 py-6 h-screen flex flex-col">
-        <header className="bg-transparent rounded-2xl p-4 mb-6 border border-[#2A2A2A]">
+      <div className="w-full px-4 py-6 h-screen max-h-[100vh] flex flex-col">
+        <header className="bg-transparent rounded-2xl p-4 mb-6 border border-[#2A2A2A] flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-background p-2 rounded-lg">
@@ -210,8 +211,11 @@ function ChatApp() {
           </div>
         </header>
 
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-0">
-          <div className="lg:col-span-3 flex flex-col bg-transparent rounded-2xl border border-[#2A2A2A] overflow-hidden">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-6 min-h-0 overflow-hidden">
+          <div className="hidden md:block md:col-span-1 overflow-hidden">
+            <LLMList />
+          </div>
+          <div className="md:col-span-3 flex flex-col bg-transparent rounded-2xl border border-[#2A2A2A] overflow-hidden">
             <div className="flex-1 overflow-y-auto p-6 space-y-1">
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
@@ -248,7 +252,7 @@ function ChatApp() {
             </div>
           </div>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:block lg:col-span-1 overflow-hidden">
             <UserList users={users} currentUserId={currentUser.id} />
           </div>
         </div>
@@ -258,7 +262,7 @@ function ChatApp() {
 }
 
 function App() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <Routes>
