@@ -4,7 +4,7 @@
 
 Este é um sistema de chat em tempo real completo com frontend em React/TypeScript e backend em Node.js, utilizando WebSockets para comunicação bidirecional instantânea. O projeto integra tecnologias modernas como Vite, Socket.IO, Supabase e Tailwind CSS para criar uma experiência de usuário fluida e responsiva.
 
-## Requisitos Funcionais
+### Requisitos Funcionais
 
 1. **Autenticação de Usuários**
    - Login com nome de usuário e nome de exibição
@@ -22,7 +22,7 @@ Este é um sistema de chat em tempo real completo com frontend em React/TypeScri
    - Reconexão automática em caso de falhas
    - Interface responsiva e moderna
 
-## Requisitos Não Funcionais
+### Requisitos Não Funcionais
 
 1. **Desempenho**
    - Baixa latência nas mensagens (menos de 100ms)
@@ -44,9 +44,9 @@ Este é um sistema de chat em tempo real completo com frontend em React/TypeScri
    - Feedback visual para ações do usuário
    - Indicadores claros de status de conexão
 
-## Implementação dos WebSockets
+### Implementação dos WebSockets
 
-### 1. WebSocket do Vite (HMR - Hot Module Replacement)
+#### 1. WebSocket do Vite (HMR - Hot Module Replacement)
 
 O Vite utiliza seu próprio WebSocket na porta padrão do servidor de desenvolvimento (5173) para:
 - Atualizações de módulo em tempo de desenvolvimento
@@ -55,7 +55,7 @@ O Vite utiliza seu próprio WebSocket na porta padrão do servidor de desenvolvi
 
 Este WebSocket opera exclusivamente para funcionalidades de desenvolvimento e não interfere no funcionamento da aplicação em produção.
 
-### 2. WebSocket do Chat (Comunicação em Tempo Real)
+#### 2. WebSocket do Chat (Comunicação em Tempo Real)
 
 Implementado com Socket.IO tanto no frontend quanto no backend:
 
@@ -82,6 +82,6 @@ Os dois WebSockets coexistem sem conflitos porque:
 
 Essa arquitetura permite desenvolver e executar a aplicação de chat com todas as vantagens do HMR do Vite sem interferir na funcionalidade principal de comunicação em tempo real.
 
-## Hashtags
+### Hashtags
 
 #ChatEmTempoReal #WebSocket #NodeJS #React #TypeScript #Vite #SocketIO #Supabase #DesenvolvimentoWeb #Programação #Frontend #Backend #AplicaçãoWeb #ComunicaçãoEmTempoReal #Tecnologia #DesenvolvimentoDeSoftware #WebDevelopment #JavaScript #FullStack #ProjetoDeChat #HMR #HotModuleReplacement #TailwindCSS #DesenvolvimentoFrontend #DesenvolvimentoBackend
