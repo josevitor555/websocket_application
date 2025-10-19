@@ -4,6 +4,8 @@
 
 Este é um sistema de chat em tempo real completo com frontend em React/TypeScript e backend em Node.js, utilizando WebSockets para comunicação bidirecional instantânea. O projeto integra tecnologias modernas como Vite, Socket.IO, Supabase e Tailwind CSS para criar uma experiência de usuário fluida e responsiva.
 
+---
+
 ### Requisitos Funcionais
 
 1. **Autenticação de Usuários**
@@ -21,6 +23,8 @@ Este é um sistema de chat em tempo real completo com frontend em React/TypeScri
    - Status de conexão WebSocket
    - Reconexão automática em caso de falhas
    - Interface responsiva e moderna
+
+---
 
 ### Requisitos Não Funcionais
 
@@ -43,6 +47,8 @@ Este é um sistema de chat em tempo real completo com frontend em React/TypeScri
    - Interface intuitiva com design moderno
    - Feedback visual para ações do usuário
    - Indicadores claros de status de conexão
+
+---
 
 ### Implementação dos WebSockets
 
@@ -72,6 +78,8 @@ Implementado com Socket.IO tanto no frontend quanto no backend:
 - Interface em tempo real para mensagens e usuários
 - Indicador de status de conexão com reconexão automática
 
+---
+
 ### Coexistência dos WebSockets
 
 Os dois WebSockets coexistem sem conflitos porque:
@@ -81,6 +89,8 @@ Os dois WebSockets coexistem sem conflitos porque:
 4. **Escopos isolados**: Não compartilham namespaces ou eventos
 
 Essa arquitetura permite desenvolver e executar a aplicação de chat com todas as vantagens do HMR do Vite sem interferir na funcionalidade principal de comunicação em tempo real.
+
+---
 
 ### Hashtags
 
