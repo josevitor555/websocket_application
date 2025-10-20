@@ -31,7 +31,7 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
                 onChange={handleChange}
                 disabled={disabled}
                 placeholder="Digite sua mensagem..."
-                className="flex-1 px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#E0E0E0] placeholder-[#A0A0A0]"
+                className="flex-1 px-4 py-3 bg-transparent border border-[#2A2A2A] rounded-xl text-[#E0E0E0] placeholder-[#A0A0A0]"
             />
             <button
                 type="submit"

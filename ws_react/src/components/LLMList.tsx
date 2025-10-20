@@ -1,4 +1,5 @@
 import { Bot, Circle } from 'lucide-react';
+import { motion, easeOut } from 'framer-motion';
 
 // Define the LLM type
 interface LLM {
@@ -61,7 +62,7 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
     },
     // Anthropic
     {
-      id: 'claude',
+      id: 'claude-4.5-sonnet',
       name: 'Claude 4.5 sonnet',
       company: 'Anthropic',
       description: 'Assistente de IA com foco em segurança e utilidade',
@@ -69,7 +70,7 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
       logoUrl: 'https://ppc.land/content/images/size/w2000/2025/09/Claude-AI-logo.webp' // Placeholder for Anthropic logo
     },
     {
-      id: 'claude',
+      id: 'claude-4.5-haiku',
       name: 'Claude 4.5 haiku',
       company: 'Anthropic',
       description: 'Assistente de IA com foco em segurança e utilidade',
@@ -129,8 +130,39 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
     return acc;
   }, {} as Record<string, LLM[]>);
 
+  // Animation variants for slide-in from left effect
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2 // Increased stagger for more subtle effect
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      x: -30 // Start position from the left
+    },
+    visible: {
+      opacity: 1,
+      x: 0, // End position at original location
+      transition: {
+        duration: 0.8, // Slower animation for subtle effect
+        ease: easeOut
+      }
+    }
+  };
+
   return (
-    <div className="bg-transparent rounded-2xl border border-[#2A2A2A] h-full max-h-[100vh] flex flex-col overflow-hidden">
+    <motion.div 
+      className="bg-transparent rounded-2xl border border-[#2A2A2A] h-full max-h-[100vh] flex flex-col overflow-hidden"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       <div className="flex items-center gap-3 p-6 pb-0">
         <Bot className="w-5 h-5 text-background mb-4" />
         <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
@@ -140,20 +172,33 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
 
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 pt-6">
         <div className="space-y-6 min-w-full">
-          {Object.entries(groupedLLMs).map(([company, companyLLMs]) => (
-            <div key={company}>
+          {Object.entries(groupedLLMs).map(([company, companyLLMs], companyIndex) => (
+            <motion.div 
+              key={company}
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
               <h3 className="text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider mb-3">
                 {company}
               </h3>
               <div className="space-y-2">
-                {companyLLMs.map((llm) => (
-                  <div
+                {companyLLMs.map((llm, index) => (
+                  <motion.div
                     key={llm.id}
                     onClick={() => onLLMSelect?.(llm.id)}
                     className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${llm.isSelected
                         ? 'bg-white/10 border border-[#2A2A2A]'
-                        : 'bg-[#121212] border border-[#2A2A2A] hover:bg-[#1A1A1A]'
+                        : 'bg-transparent border border-[#2A2A2A]'
                       }`}
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ 
+                      delay: index * 0.1,
+                      duration: 0.8,
+                      ease: easeOut
+                    }}
                   >
                     <div className="relative">
                       <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center overflow-hidden">
@@ -168,20 +213,20 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[#E0E0E0] font-medium text-sm truncate">
+                      <p className="text-[#E0E0E0] font-medium text-base truncate">
                         {llm.name}
                       </p>
-                      <p className="text-[#A0A0A0] text-xs truncate">
+                      <p className="text-[#A0A0A0] text-base truncate">
                         {llm.description}
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

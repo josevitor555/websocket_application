@@ -22,7 +22,7 @@ export function ChatMessage({ message, isOwnMessage }: ChatMessageProps) {
                 <div
                     className={`rounded-2xl px-4 py-3 ${isOwnMessage
                             ? 'bg-[#E0E0E0] text-[#1A1A1A] rounded-br-md'
-                            : 'bg-[#1A1A1A] text-[#E0E0E0] rounded-bl-md'
+                            : 'bg-[#E0E0E0] text-[#1A1A1A] rounded-bl-md'
                         }`}
                 >
                     <p className="text-base break-words">{message.message}</p>

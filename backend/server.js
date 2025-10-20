@@ -78,9 +78,11 @@ io.on('connection', (socket) => {
         return;
       }
 
-      // Armazenar usuário conectado
+      // Armazenar usuário conectado com todas as informações necessárias
       connectedUsers.set(socket.id, {
         userId,
+        username: user.username, // Adicionar username
+        displayName: user.display_name, // Adicionar display_name
         sessionToken,
         socketId: socket.id,
         isOnline: true
@@ -153,12 +155,13 @@ io.on('connection', (socket) => {
   });
 
   // Evento de digitação
-  socket.on('typing', (data) => {
+  socket.on('typing', async (data) => {
     const user = connectedUsers.get(socket.id);
     if (user) {
       // Enviar status de digitação para todos, exceto o próprio usuário
       socket.broadcast.emit('user_typing', {
         userId: user.userId,
+        username: user.displayName || user.username, // Usar display_name ou username
         isTyping: data.isTyping
       });
     }
@@ -190,6 +193,12 @@ io.on('connection', (socket) => {
         const onlineUsers = await User.getOnlineUsers();
         console.log('[Disconnect] Updated online users list:', onlineUsers?.length || 0, 'users');
         io.emit('users_updated', onlineUsers || []);
+
+        // Enviar um evento para limpar o indicador de digitação deste usuário
+        socket.broadcast.emit('user_stop_typing', {
+          userId: user.userId,
+          username: user.displayName || user.username
+        });
       } catch (error) {
         console.error('[Disconnect] Error updating user status:', error);
       }
