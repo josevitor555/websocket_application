@@ -45,7 +45,7 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
     // Google
     {
       id: 'gemini-flash',
-      name: 'Gemini Flash',
+      name: 'Gemini 1.5 Flash',
       company: 'Google',
       description: 'Versão rápida e eficiente do Gemini',
       isSelected: false,
@@ -53,7 +53,7 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
     },
     {
       id: 'gemini-pro',
-      name: 'Gemini Pro',
+      name: 'Gemini 2.5 Pro',
       company: 'Google',
       description: 'Modelo de linguagem multimodal do Google',
       isSelected: false,
@@ -62,7 +62,15 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
     // Anthropic
     {
       id: 'claude',
-      name: 'Claude',
+      name: 'Claude 4.5 sonnet',
+      company: 'Anthropic',
+      description: 'Assistente de IA com foco em segurança e utilidade',
+      isSelected: false,
+      logoUrl: 'https://ppc.land/content/images/size/w2000/2025/09/Claude-AI-logo.webp' // Placeholder for Anthropic logo
+    },
+    {
+      id: 'claude',
+      name: 'Claude 4.5 haiku',
       company: 'Anthropic',
       description: 'Assistente de IA com foco em segurança e utilidade',
       isSelected: false,
@@ -93,22 +101,22 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
       isSelected: false,
       logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png' // Placeholder for xAI logo
     },
-    // Mistral AI
+    // DeepSeek AI
     {
-      id: 'mistral',
-      name: 'Mistral',
-      company: 'Mistral AI',
-      description: 'Modelo eficiente e poderoso de código aberto',
+      id: 'deepseek-ai',
+      name: 'DeepSeek-R1-0528',
+      company: 'DeepSeek',
+      description: 'Um modelo de raciocínio mais refinado',
       isSelected: false,
-      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfBpAyt03guidOXPIaR3o28eNlVqemSOjQEg&s' // Placeholder for Mistral AI logo
+      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqKHD28rGat3WVaqRkRDgIL-SHgOTHB6MrNg&s' // Placeholder for Mistral AI logo
     },
     {
-      id: 'mixtral',
-      name: 'Mixtral',
-      company: 'Mistral AI',
+      id: 'deepseek-v3',
+      name: 'DeepSeek-V3-0324',
+      company: 'DeepSeek',
       description: 'Modelo especializado em raciocínio e matemática',
       isSelected: false,
-      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfBpAyt03guidOXPIaR3o28eNlVqemSOjQEg&s' // Placeholder for Mistral AI logo
+      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqKHD28rGat3WVaqRkRDgIL-SHgOTHB6MrNg&s' // Placeholder for Mistral AI logo
     }
   ];
 
@@ -124,9 +132,9 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
   return (
     <div className="bg-transparent rounded-2xl border border-[#2A2A2A] h-full max-h-[100vh] flex flex-col overflow-hidden">
       <div className="flex items-center gap-3 p-6 pb-0">
-        <Bot className="w-5 h-5 text-background" />
-        <h2 className="text-lg font-semibold text-[#E0E0E0]">
-          Modelos de IA
+        <Bot className="w-5 h-5 text-background mb-4" />
+        <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
+          Modelos LLM disponível
         </h2>
       </div>
 
@@ -142,16 +150,15 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
                   <div
                     key={llm.id}
                     onClick={() => onLLMSelect?.(llm.id)}
-                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
-                      llm.isSelected 
-                        ? 'bg-white/10 border border-[#2A2A2A]' 
+                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${llm.isSelected
+                        ? 'bg-white/10 border border-[#2A2A2A]'
                         : 'bg-[#121212] border border-[#2A2A2A] hover:bg-[#1A1A1A]'
-                    }`}
+                      }`}
                   >
                     <div className="relative">
                       <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center overflow-hidden">
-                        <img 
-                          src={llm.logoUrl} 
+                        <img
+                          src={llm.logoUrl}
                           alt={`${llm.name} logo`}
                           className="w-6 h-6 object-contain"
                         />
