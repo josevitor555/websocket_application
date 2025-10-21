@@ -12,13 +12,13 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
   // Separar o usuário atual dos demais usuários online
   const currentUser = users.find(u => u.id === currentUserId);
   const otherOnlineUsers = users.filter(u => u.is_online && u.id !== currentUserId);
-  
+
   // Contar todos os usuários online (incluindo o usuário atual)
   const totalOnlineUsers = users.filter(u => u.is_online).length;
-  
+
   // Verificar se o usuário que está digitando é um usuário real (presente na lista de usuários)
-  const isTypingUserReal = typingUser && users.some(u => 
-    u.display_name === typingUser || 
+  const isTypingUserReal = typingUser && users.some(u =>
+    u.display_name === typingUser ||
     u.username === typingUser ||
     `User_${u.id.substring(0, 8)}` === typingUser
   );
@@ -35,8 +35,8 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       x: -30 // Start position from the left
     },
     visible: {
@@ -50,7 +50,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="bg-transparent rounded-2xl p-6 border border-[#2A2A2A] h-full"
       initial="hidden"
       animate="visible"
@@ -63,10 +63,10 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
             Online ({totalOnlineUsers})
           </h2>
         </div>
-        
+
         {/* Indicador de usuário digitando no canto superior direito - apenas para usuários reais */}
         {typingUser && typingUser !== currentUser?.display_name && isTypingUserReal && (
-          <motion.div 
+          <motion.div
             className="text-xs text-[#A0A0A0] italic whitespace-nowrap overflow-hidden"
             variants={itemVariants}
             initial="hidden"
@@ -79,7 +79,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
 
       <div className="space-y-3">
         {totalOnlineUsers === 0 ? (
-          <motion.p 
+          <motion.p
             className="text-[#A0A0A0] text-sm text-center py-8"
             variants={itemVariants}
           >
@@ -89,12 +89,12 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
           <>
             {/* Exibir o usuário atual primeiro, se estiver online */}
             {currentUser && currentUser.is_online && (
-              <motion.div 
-                className="flex items-center gap-3 p-3 rounded-xl bg-white/10"
+              <motion.div
+                className="flex items-center gap-3 py-3 px-4 rounded-full border border-[#2A2A2A]"
                 variants={itemVariants}
                 initial="hidden"
                 animate="visible"
-                transition={{ 
+                transition={{
                   delay: 0,
                   duration: 0.8,
                   ease: easeOut
@@ -116,7 +116,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
                 </div>
               </motion.div>
             )}
-            
+
             {/* Exibir os demais usuários online */}
             {otherOnlineUsers.map((user, index) => (
               <motion.div
@@ -125,7 +125,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
                 variants={itemVariants}
                 initial="hidden"
                 animate="visible"
-                transition={{ 
+                transition={{
                   delay: (currentUser && currentUser.is_online ? 1 : 0) + index * 0.1,
                   duration: 0.8,
                   ease: easeOut

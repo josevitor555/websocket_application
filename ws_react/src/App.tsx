@@ -5,6 +5,7 @@ import { ChatMessage } from './components/ChatMessage';
 import { UserList } from './components/UserList';
 import { LLMList } from './components/LLMList';
 import { ChatInput } from './components/ChatInput';
+import { LLMMentionModal } from './components/LLMMentionModal';
 import { ConnectionStatus } from './components/ConnectionStatus';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { useAuth } from './hooks/useAuth';
@@ -244,7 +245,7 @@ function ChatApp() {
 
   return (
     <motion.div 
-      className="min-h-screen bg-[#1c1c1f]"
+      className="min-h-screen bg-[#1e1e20]"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -301,7 +302,7 @@ function ChatApp() {
             <div className="flex-1 overflow-y-auto p-6 space-y-1">
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-[#A0A0A0] text-center">
+                  <p className="text-[#fafafa] text-center">
                     Nenhuma mensagem ainda. Seja o primeiro a enviar uma mensagem!
                   </p>
                 </div>

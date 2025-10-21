@@ -13,9 +13,10 @@ interface LLM {
 
 interface LLMListProps {
   onLLMSelect?: (llmId: string) => void;
+  isInModal?: boolean; // Nova prop para indicar se está no modal
 }
 
-export function LLMList({ onLLMSelect }: LLMListProps) {
+export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
   // Predefined list of LLMs organized by company with logo URLs
   const llms: LLM[] = [
     // OpenAI
@@ -23,101 +24,101 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
       id: 'gpt-3',
       name: 'GPT-3',
       company: 'OpenAI',
-      description: 'Modelo de linguagem predecessor do GPT-4',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png' // Placeholder for OpenAI logo
+      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png'
     },
     {
       id: 'gpt-4',
       name: 'GPT-4',
       company: 'OpenAI',
-      description: 'Modelo de linguagem avançado da OpenAI',
-      isSelected: true,
-      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png' // Placeholder for OpenAI logo
+      description: 'Disponível para uso',
+      isSelected: false,
+      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png'
     },
     {
       id: 'gpt-5',
       name: 'GPT-5',
       company: 'OpenAI',
-      description: 'Mais recente modelo de linguagem da OpenAI',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png' // Placeholder for OpenAI logo
+      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png'
     },
     // Google
     {
       id: 'gemini-flash',
       name: 'Gemini 1.5 Flash',
       company: 'Google',
-      description: 'Versão rápida e eficiente do Gemini',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://images.seeklogo.com/logo-png/62/1/google-gemini-icon-logo-png_seeklogo-623016.png' // Placeholder for Google logo
+      logoUrl: 'https://images.seeklogo.com/logo-png/62/1/google-gemini-icon-logo-png_seeklogo-623016.png'
     },
     {
       id: 'gemini-pro',
       name: 'Gemini 2.5 Pro',
       company: 'Google',
-      description: 'Modelo de linguagem multimodal do Google',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://images.seeklogo.com/logo-png/62/1/google-gemini-icon-logo-png_seeklogo-623016.png' // Placeholder for Google logo
+      logoUrl: 'https://images.seeklogo.com/logo-png/62/1/google-gemini-icon-logo-png_seeklogo-623016.png'
     },
     // Anthropic
     {
       id: 'claude-4.5-sonnet',
-      name: 'Claude 4.5 sonnet',
+      name: 'Claude 4.5 Sonnet',
       company: 'Anthropic',
-      description: 'Assistente de IA com foco em segurança e utilidade',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://ppc.land/content/images/size/w2000/2025/09/Claude-AI-logo.webp' // Placeholder for Anthropic logo
+      logoUrl: 'https://ppc.land/content/images/size/w2000/2025/09/Claude-AI-logo.webp'
     },
     {
       id: 'claude-4.5-haiku',
-      name: 'Claude 4.5 haiku',
+      name: 'Claude 4.5 Haiku',
       company: 'Anthropic',
-      description: 'Assistente de IA com foco em segurança e utilidade',
+      description: 'Ainda indisponível',
       isSelected: false,
-      logoUrl: 'https://ppc.land/content/images/size/w2000/2025/09/Claude-AI-logo.webp' // Placeholder for Anthropic logo
+      logoUrl: 'https://ppc.land/content/images/size/w2000/2025/09/Claude-AI-logo.webp'
     },
     // xAI
     {
       id: 'grok-2',
       name: 'Grok-2',
       company: 'xAI',
-      description: 'Versão aprimorada do modelo Grok',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png' // Placeholder for xAI logo
+      logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png'
     },
     {
       id: 'grok-3',
       name: 'Grok-3',
       company: 'xAI',
-      description: 'Modelo de linguagem mais recente do xAI',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png' // Placeholder for xAI logo
+      logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png'
     },
     {
       id: 'grok-heavy',
       name: 'Grok Heavy',
       company: 'xAI',
-      description: 'Versão mais poderosa do Grok para tarefas complexas',
+      description: 'Ainda indisponível',
       isSelected: false,
-      logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png' // Placeholder for xAI logo
+      logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png'
     },
     // DeepSeek AI
     {
       id: 'deepseek-ai',
       name: 'DeepSeek-R1-0528',
       company: 'DeepSeek',
-      description: 'Um modelo de raciocínio mais refinado',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqKHD28rGat3WVaqRkRDgIL-SHgOTHB6MrNg&s' // Placeholder for Mistral AI logo
+      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqKHD28rGat3WVaqRkRDgIL-SHgOTHB6MrNg&s'
     },
     {
       id: 'deepseek-v3',
       name: 'DeepSeek-V3-0324',
       company: 'DeepSeek',
-      description: 'Modelo especializado em raciocínio e matemática',
+      description: 'Disponível para uso',
       isSelected: false,
-      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqKHD28rGat3WVaqRkRDgIL-SHgOTHB6MrNg&s' // Placeholder for Mistral AI logo
+      logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqKHD28rGat3WVaqRkRDgIL-SHgOTHB6MrNg&s'
     }
   ];
 
@@ -136,7 +137,7 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2 // Increased stagger for more subtle effect
+        staggerChildren: 0.1
       }
     }
   };
@@ -144,33 +145,32 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
   const itemVariants = {
     hidden: { 
       opacity: 0, 
-      x: -30 // Start position from the left
+      x: -20
     },
     visible: {
       opacity: 1,
-      x: 0, // End position at original location
+      x: 0,
       transition: {
-        duration: 0.8, // Slower animation for subtle effect
+        duration: 0.5,
         ease: easeOut
       }
     }
   };
 
   return (
-    <motion.div 
-      className="bg-transparent rounded-2xl border border-[#2A2A2A] h-full max-h-[100vh] flex flex-col overflow-hidden"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
+    <div 
+      className={`${isInModal ? '' : 'bg-transparent rounded-2xl border border-[#2A2A2A]'} h-full max-h-[100vh] flex flex-col overflow-hidden`}
     >
-      <div className="flex items-center gap-3 p-6 pb-0">
-        <Bot className="w-5 h-5 text-background mb-4" />
-        <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
-          Modelos LLM disponível
-        </h2>
-      </div>
+      {!isInModal && (
+        <div className="flex items-center gap-3 p-6 pb-0">
+          <Bot className="w-5 h-5 text-background mb-4" />
+          <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
+            Modelos LLM disponível
+          </h2>
+        </div>
+      )}
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 pt-6">
+      <div className={`${isInModal ? 'p-4' : 'p-6 pt-6'} flex-1 overflow-y-auto overflow-x-hidden`}>
         <div className="space-y-6 min-w-full">
           {Object.entries(groupedLLMs).map(([company, companyLLMs], companyIndex) => (
             <motion.div 
@@ -182,21 +182,22 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
               <h3 className="text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider mb-3">
                 {company}
               </h3>
-              <div className="space-y-2">
+              <div className="grid grid-cols-1 gap-3">
                 {companyLLMs.map((llm, index) => (
                   <motion.div
                     key={llm.id}
                     onClick={() => onLLMSelect?.(llm.id)}
-                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${llm.isSelected
+                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
+                      llm.isSelected
                         ? 'bg-white/10 border border-[#2A2A2A]'
-                        : 'bg-transparent border border-[#2A2A2A]'
-                      }`}
+                        : 'bg-transparent border border-[#2A2A2A] hover:bg-white/5'
+                    }`}
                     variants={itemVariants}
                     initial="hidden"
                     animate="visible"
                     transition={{ 
-                      delay: index * 0.1,
-                      duration: 0.8,
+                      delay: index * 0.05,
+                      duration: 0.5,
                       ease: easeOut
                     }}
                   >
@@ -216,7 +217,7 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
                       <p className="text-[#E0E0E0] font-medium text-base truncate">
                         {llm.name}
                       </p>
-                      <p className="text-[#A0A0A0] text-base truncate">
+                      <p className={`text-sm truncate ${llm.description.includes('indisponível') ? 'text-red-400' : 'text-[#A0A0A0]'}`}>
                         {llm.description}
                       </p>
                     </div>
@@ -227,6 +228,6 @@ export function LLMList({ onLLMSelect }: LLMListProps) {
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
