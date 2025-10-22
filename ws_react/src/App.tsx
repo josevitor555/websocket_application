@@ -3,11 +3,11 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { LoginForm } from './components/LoginForm';
 import { ChatMessage } from './components/ChatMessage';
 import { UserList } from './components/UserList';
-import { LLMList } from './components/LLMList';
 import { ChatInput } from './components/ChatInput';
-import { LLMMentionModal } from './components/LLMMentionModal';
+// import { LLMMentionModal } from './components/LLMMentionModal';
 import { ConnectionStatus } from './components/ConnectionStatus';
 import { LoadingSpinner } from './components/LoadingSpinner';
+import { SectionList } from './components/SectionList';
 import { useAuth } from './hooks/useAuth';
 import { useTypingIndicator } from './hooks/useTypingIndicator';
 import { userService, messageService } from './lib/api';
@@ -58,7 +58,7 @@ function ChatApp() {
 
     socket.on('authenticated', async (data) => {
       console.log('[Socket.IO] Authenticated:', data);
-      
+
       // Carregar histórico de mensagens quando autenticado
       if (!hasLoadedInitialMessages.current) {
         try {
@@ -104,11 +104,11 @@ function ChatApp() {
             id: message.id || `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             created_at: message.created_at || new Date().toISOString()
           };
-          
+
           setMessages((prev) => {
             // Verificar se a mensagem já existe para evitar duplicatas
-            const messageExists = prev.some(msg => 
-              msg.message === messageWithTempId.message && 
+            const messageExists = prev.some(msg =>
+              msg.message === messageWithTempId.message &&
               msg.user_id === messageWithTempId.user_id &&
               Math.abs(new Date(msg.created_at).getTime() - new Date(messageWithTempId.created_at).getTime()) < 5000 // 5 segundos
             );
@@ -218,8 +218,8 @@ function ChatApp() {
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       x: -30
     },
     visible: {
@@ -244,14 +244,14 @@ function ChatApp() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen bg-[#1e1e20]"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
       <div className="w-full px-4 py-6 h-screen max-h-[100vh] flex flex-col">
-        <motion.header 
+        <motion.header
           className="bg-transparent rounded-2xl p-4 mb-6 border border-[#2A2A2A] flex-shrink-0"
           variants={itemVariants}
         >
@@ -284,18 +284,63 @@ function ChatApp() {
           </div>
         </motion.header>
 
-        <motion.div 
+        <motion.div
           className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-6 min-h-0 overflow-hidden"
           variants={containerVariants}
         >
-          <motion.div 
+          <motion.div
             className="hidden md:block md:col-span-1 overflow-hidden"
             variants={itemVariants}
           >
-            <LLMList />
+            <SectionList
+              sections={[
+                {
+                  id: '1',
+                  title: 'Hoje',
+                  icon: '💬',
+                  date: new Date()
+                },
+                {
+                  id: '2',
+                  title: 'Ontem',
+                  icon: '📅',
+                  date: new Date(Date.now() - 24 * 60 * 60 * 1000)
+                },
+                {
+                  id: '3',
+                  title: 'Esta semana',
+                  icon: '📅',
+                  date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                },
+                {
+                  id: '4',
+                  title: 'Esta semana',
+                  icon: '📅',
+                  date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                },
+                {
+                  id: '5',
+                  title: 'Esta semana',
+                  icon: '📅',
+                  date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                },
+                {
+                  id: '3',
+                  title: 'LLM Battle Royale',
+                  icon: '🤖',
+                  date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+                },
+                {
+                  id: '4',
+                  title: 'LLM Battle Royale',
+                  icon: '🤖',
+                  date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+                },
+              ]}
+            />
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="md:col-span-3 flex flex-col bg-transparent rounded-2xl border border-[#2A2A2A] overflow-hidden"
             variants={itemVariants}
           >
@@ -328,14 +373,14 @@ function ChatApp() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="hidden lg:block lg:col-span-1 overflow-hidden"
             variants={itemVariants}
           >
-            <UserList 
-              users={users} 
-              currentUserId={currentUser.id} 
-              typingUser={typingUser || undefined} 
+            <UserList
+              users={users}
+              currentUserId={currentUser.id}
+              typingUser={typingUser || undefined}
             />
           </motion.div>
         </motion.div>

@@ -1,26 +1,21 @@
-import { Bot, Circle } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import { motion, easeOut } from 'framer-motion';
-import { llmList } from '../data/llmList';
-import type { LLM } from '../data/llmList';
 
-interface LLMListProps {
-  onLLMSelect?: (llmId: string) => void;
-  isInModal?: boolean; // Nova prop para indicar se está no modal
+// Tipo para seções de chat
+export interface ChatSection {
+  id: string;
+  title: string;
+  icon: string; // Podemos usar emojis ou URLs de ícones
+  date?: Date; // Opcional, para seções organizadas por data
 }
 
-export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
-  // Predefined list of LLMs organized by company with logo URLs
-  const llms: LLM[] = llmList;
+interface SectionListProps {
+  onSectionSelect?: (sectionId: string) => void;
+  isInModal?: boolean; // Nova prop para indicar se está no modal
+  sections: ChatSection[]; // Dados para seções de chat
+}
 
-  // Group LLMs by company
-  const groupedLLMs = llms.reduce((acc, llm) => {
-    if (!acc[llm.company]) {
-      acc[llm.company] = [];
-    }
-    acc[llm.company].push(llm);
-    return acc;
-  }, {} as Record<string, LLM[]>);
-
+export function SectionList({ onSectionSelect, isInModal = false, sections }: SectionListProps) {
   // Animation variants for slide-in from left effect
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -47,6 +42,23 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
     }
   };
 
+  // Agrupar seções por data
+  const groupedSections = sections.reduce((acc, section) => {
+    const dateKey = section.date 
+      ? section.date.toLocaleDateString('pt-BR', { 
+          weekday: 'long', 
+          day: 'numeric', 
+          month: 'long' 
+        })
+      : 'Sem data';
+    
+    if (!acc[dateKey]) {
+      acc[dateKey] = [];
+    }
+    acc[dateKey].push(section);
+    return acc;
+  }, {} as Record<string, ChatSection[]>);
+
   return (
     <div 
       className={`${isInModal ? '' : 'bg-transparent rounded-2xl border border-[#2A2A2A]'} h-full max-h-[100vh] flex flex-col overflow-hidden`}
@@ -55,30 +67,30 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
         <div className="flex items-center gap-3 p-6 pb-0">
           <Bot className="w-5 h-5 text-background mb-4" />
           <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
-            Modelos LLM disponível
+            Seções de Chat
           </h2>
         </div>
       )}
 
       <div className={`${isInModal ? 'p-4' : 'p-6 pt-6'} flex-1 overflow-y-auto overflow-x-hidden`}>
         <div className="space-y-6 min-w-full">
-          {Object.entries(groupedLLMs).map(([company, companyLLMs], companyIndex) => (
+          {Object.entries(groupedSections).map(([date, dateSections], dateIndex) => (
             <motion.div 
-              key={company}
+              key={date}
               variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
               <h3 className="text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider mb-3">
-                {company}
+                {date}
               </h3>
               <div className="grid grid-cols-1 gap-3">
-                {companyLLMs.map((llm, index) => (
+                {dateSections.map((section, index) => (
                   <motion.div
-                    key={llm.id}
-                    onClick={() => onLLMSelect?.(llm.id)}
+                    key={section.id}
+                    onClick={() => onSectionSelect?.(section.id)}
                     className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
-                      llm.isSelected
+                      index === 0 && dateIndex === 0
                         ? 'bg-white/10 border border-[#2A2A2A]'
                         : 'bg-transparent border border-[#2A2A2A] hover:bg-white/5'
                     }`}
@@ -93,22 +105,12 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                   >
                     <div className="relative">
                       <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center overflow-hidden">
-                        <img
-                          src={llm.logoUrl}
-                          alt={`${llm.name} logo`}
-                          className="w-6 h-6 object-contain"
-                        />
+                        <span className="text-lg">{section.icon}</span>
                       </div>
-                      {llm.isSelected && (
-                        <Circle className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
-                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[#E0E0E0] font-medium text-base truncate">
-                        {llm.name}
-                      </p>
-                      <p className={`text-sm truncate ${llm.description.includes('indisponível') ? 'text-red-400' : 'text-[#A0A0A0]'}`}>
-                        {llm.description}
+                        {section.title}
                       </p>
                     </div>
                   </motion.div>

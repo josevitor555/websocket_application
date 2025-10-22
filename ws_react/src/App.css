@@ -1,3 +1,8 @@
 ::-webkit-scrollbar {
   width: 0;
 }
+
+/* Verificação da fonte Roboto Mono */
+.test-font {
+  font-family: 'Roboto Mono', monospace;
+}
