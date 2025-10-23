@@ -1,7 +1,8 @@
-import { Bot, Circle } from 'lucide-react';
 import { motion, easeOut } from 'framer-motion';
 import { llmList } from '../data/llmList';
 import type { LLM } from '../data/llmList';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRobot, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 interface LLMListProps {
   onLLMSelect?: (llmId: string) => void;
@@ -53,7 +54,7 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
     >
       {!isInModal && (
         <div className="flex items-center gap-3 p-6 pb-0">
-          <Bot className="w-5 h-5 text-background mb-4" />
+          <FontAwesomeIcon icon={faRobot} className="w-5 h-5 text-background mb-4" />
           <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
             Modelos LLM disponível
           </h2>
@@ -100,7 +101,7 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                         />
                       </div>
                       {llm.isSelected && (
-                        <Circle className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
+                        <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] absolute bottom-0 right-0" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">

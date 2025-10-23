@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
 import { LLMMentionModal } from './LLMMentionModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 interface ChatInputProps {
     onSendMessage: (message: string) => void;
@@ -81,7 +82,7 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
                     disabled={!message.trim() || disabled}
                     className="bg-background text-[#121212] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
                 >
-                    <Send className="w-5 h-5" />
+                    <FontAwesomeIcon icon={faPaperPlane} className="w-5 h-5" />
                 </button>
             </form>
 
@@ -90,7 +91,6 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
                     <LLMMentionModal
                         onClose={() => setShowLLMModal(false)}
                         onSelect={handleLLMSelect}
-                        position={mentionPosition}
                     />
                 </div>
             )}

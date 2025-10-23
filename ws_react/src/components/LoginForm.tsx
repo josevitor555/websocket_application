@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User } from 'lucide-react';
 import { motion, easeOut } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 export function LoginForm() {
     const { login, loading, error } = useAuth();
@@ -64,7 +65,7 @@ export function LoginForm() {
                     variants={itemVariants}
                 >
                     <div className="bg-background p-4 rounded-full">
-                        <User className="w-8 h-8 text-[#222222]" />
+                        <FontAwesomeIcon icon={faUser} className="w-8 h-8 text-[#222222]" />
                     </div>
                 </motion.div>
 
@@ -72,14 +73,14 @@ export function LoginForm() {
                     className="text-2xl font-bold text-[#E0E0E0] text-center mb-2"
                     variants={itemVariants}
                 >
-                    Entrar no LLM Battle Royale
+                    LLM Battle Royale
                 </motion.h1>
                 
                 <motion.p 
                     className="text-[#A0A0A0] text-center mb-8"
                     variants={itemVariants}
                 >
-                    Digite suas informações para começar
+                   Entre com as informações abaixo
                 </motion.p>
 
                 {error && (

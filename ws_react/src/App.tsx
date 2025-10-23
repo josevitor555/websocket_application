@@ -12,7 +12,8 @@ import { useAuth } from './hooks/useAuth';
 import { useTypingIndicator } from './hooks/useTypingIndicator';
 import { userService, messageService } from './lib/api';
 import type { ChatMessage as ChatMessageType, ChatUser } from '../types/chat';
-import { MessageSquare, LogOut } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComments, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { motion, easeOut } from 'framer-motion';
 import { io, Socket } from 'socket.io-client';
 
@@ -245,7 +246,7 @@ function ChatApp() {
 
   return (
     <motion.div
-      className="min-h-screen bg-[#1e1e20]"
+      className="min-h-screen bg-[#1c1c1f]"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -258,7 +259,7 @@ function ChatApp() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-background p-2 rounded-lg">
-                <MessageSquare className="w-6 h-6 text-[#2A2A2A]" />
+                <FontAwesomeIcon icon={faComments} className="w-6 h-6 text-[#2A2A2A]" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-[#E0E0E0]"> LLM Battle Royale </h1>
@@ -277,7 +278,7 @@ function ChatApp() {
                 onClick={logout}
                 className="flex items-center gap-2 px-4 py-2 bg-[#121212] hover:bg-[#EF4444] text-[#E0E0E0] cursor-pointer rounded-lg transition-colors border border-[#2A2A2A] hover:border-[#EF4444]"
               >
-                <LogOut className="w-4 h-4" />
+                <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
                 <span className="hidden sm:inline">Sair</span>
               </button>
             </div>
@@ -294,48 +295,64 @@ function ChatApp() {
           >
             <SectionList
               sections={[
+                // Seções de hoje
                 {
-                  id: '1',
-                  title: 'Hoje',
-                  icon: '💬',
+                  id: 'today-1',
+                  title: 'Discussão técnica',
+                  icon: 'fa-laptop-code',
                   date: new Date()
                 },
                 {
-                  id: '2',
-                  title: 'Ontem',
-                  icon: '📅',
+                  id: 'today-2',
+                  title: 'Reunião de equipe',
+                  icon: 'fa-users',
+                  date: new Date()
+                },
+                // Seções de ontem
+                {
+                  id: 'yesterday-1',
+                  title: 'Planejamento semanal',
+                  icon: 'fa-calendar-alt',
                   date: new Date(Date.now() - 24 * 60 * 60 * 1000)
                 },
                 {
-                  id: '3',
-                  title: 'Esta semana',
-                  icon: '📅',
-                  date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                  id: 'yesterday-2',
+                  title: 'Revisão de código',
+                  icon: 'fa-code',
+                  date: new Date(Date.now() - 24 * 60 * 60 * 1000)
+                },
+                // Seções da semana passada
+                {
+                  id: 'last-week-1',
+                  title: 'Feedback do cliente',
+                  icon: 'fa-comment',
+                  date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
                 },
                 {
-                  id: '4',
-                  title: 'Esta semana',
-                  icon: '📅',
-                  date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                  id: 'last-week-2',
+                  title: 'Análise de métricas',
+                  icon: 'fa-chart-bar',
+                  date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
                 },
+                // Seções temáticas
                 {
-                  id: '5',
-                  title: 'Esta semana',
-                  icon: '📅',
-                  date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                },
-                {
-                  id: '3',
+                  id: 'theme-1',
                   title: 'LLM Battle Royale',
-                  icon: '🤖',
+                  icon: 'fa-robot',
                   date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
                 },
                 {
-                  id: '4',
-                  title: 'LLM Battle Royale',
-                  icon: '🤖',
-                  date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+                  id: 'theme-2',
+                  title: 'Projeto WebSocket',
+                  icon: 'fa-network-wired',
+                  date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
                 },
+                {
+                  id: 'theme-3',
+                  title: 'Desenvolvimento Frontend',
+                  icon: 'fa-paint-brush',
+                  date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
+                }
               ]}
             />
           </motion.div>

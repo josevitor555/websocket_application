@@ -1,13 +1,38 @@
-import { Bot } from 'lucide-react';
 import { motion, easeOut } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faRobot,
+  faLaptopCode,
+  faUsers,
+  faCalendarAlt,
+  faCode,
+  faComment,
+  faChartBar,
+  faNetworkWired,
+  faPaintBrush
+} from '@fortawesome/free-solid-svg-icons';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 // Tipo para seções de chat
 export interface ChatSection {
   id: string;
   title: string;
-  icon: string; // Podemos usar emojis ou URLs de ícones
-  date?: Date; // Opcional, para seções organizadas por data
+  icon: string; // Nome do ícone do Font Awesome
+  date?: Date;
 }
+
+// Mapa de ícones para facilitar a renderização
+const iconMap: Record<string, IconDefinition> = {
+  'fa-robot': faRobot,
+  'fa-laptop-code': faLaptopCode,
+  'fa-users': faUsers,
+  'fa-calendar-alt': faCalendarAlt,
+  'fa-code': faCode,
+  'fa-comment': faComment,
+  'fa-chart-bar': faChartBar,
+  'fa-network-wired': faNetworkWired,
+  'fa-paint-brush': faPaintBrush
+};
 
 interface SectionListProps {
   onSectionSelect?: (sectionId: string) => void;
@@ -28,8 +53,8 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       x: -20
     },
     visible: {
@@ -44,14 +69,14 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
 
   // Agrupar seções por data
   const groupedSections = sections.reduce((acc, section) => {
-    const dateKey = section.date 
-      ? section.date.toLocaleDateString('pt-BR', { 
-          weekday: 'long', 
-          day: 'numeric', 
-          month: 'long' 
-        })
+    const dateKey = section.date
+      ? section.date.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      })
       : 'Sem data';
-    
+
     if (!acc[dateKey]) {
       acc[dateKey] = [];
     }
@@ -60,12 +85,12 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
   }, {} as Record<string, ChatSection[]>);
 
   return (
-    <div 
+    <div
       className={`${isInModal ? '' : 'bg-transparent rounded-2xl border border-[#2A2A2A]'} h-full max-h-[100vh] flex flex-col overflow-hidden`}
     >
       {!isInModal && (
         <div className="flex items-center gap-3 p-6 pb-0">
-          <Bot className="w-5 h-5 text-background mb-4" />
+          <FontAwesomeIcon icon={faRobot} className="w-5 h-5 text-background mb-4" />
           <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
             Seções de Chat
           </h2>
@@ -75,7 +100,7 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
       <div className={`${isInModal ? 'p-4' : 'p-6 pt-6'} flex-1 overflow-y-auto overflow-x-hidden`}>
         <div className="space-y-6 min-w-full">
           {Object.entries(groupedSections).map(([date, dateSections], dateIndex) => (
-            <motion.div 
+            <motion.div
               key={date}
               variants={containerVariants}
               initial="hidden"
@@ -89,15 +114,14 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
                   <motion.div
                     key={section.id}
                     onClick={() => onSectionSelect?.(section.id)}
-                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
-                      index === 0 && dateIndex === 0
+                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${index === 0 && dateIndex === 0
                         ? 'bg-white/10 border border-[#2A2A2A]'
                         : 'bg-transparent border border-[#2A2A2A] hover:bg-white/5'
-                    }`}
+                      }`}
                     variants={itemVariants}
                     initial="hidden"
                     animate="visible"
-                    transition={{ 
+                    transition={{
                       delay: index * 0.05,
                       duration: 0.5,
                       ease: easeOut
@@ -105,7 +129,7 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
                   >
                     <div className="relative">
                       <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center overflow-hidden">
-                        <span className="text-lg">{section.icon}</span>
+                        <FontAwesomeIcon icon={iconMap[section.icon] || faRobot} className="text-lg" />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -119,6 +143,19 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
             </motion.div>
           ))}
         </div>
+      </div>
+
+      {/* Botão de atualização para plano Pro */}
+      <div className="p-6">
+        <button
+          className="w-full bg-white/[0.05] backdrop-blur-3xl border border-white/[0.3] text-white font-light py-3 px-4 rounded-full cursor-pointer transition-all duration-300 transform hover:scale-[1.02]"
+          onClick={() => console.log('Atualizar para plano Pro')}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <FontAwesomeIcon icon={faChartBar} className="text-white" />
+            Atualize para o plano PRO
+          </span>
+        </button>
       </div>
     </div>
   );

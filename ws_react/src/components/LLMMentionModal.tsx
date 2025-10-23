@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
 import { LLMList } from './LLMList';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 interface LLMMentionModalProps {
   onClose: () => void;
@@ -42,7 +43,7 @@ export function LLMMentionModal({ onClose, onSelect }: LLMMentionModalProps) {
     >
       <div
         ref={modalRef}
-        className="bg-[#1e1e20] rounded-lg border border-[#2A2A2A] w-full max-w-xl max-h-[80vh] overflow-hidden llm-modal shadow-2xl"
+        className="bg-white/[0.05] backdrop-blur-3xl border border-white/[0.3] rounded-lg w-full max-w-xl max-h-[80vh] overflow-hidden llm-modal shadow-2xl"
         style={{
           maxWidth: '620px',
           width: '90%'
@@ -51,13 +52,13 @@ export function LLMMentionModal({ onClose, onSelect }: LLMMentionModalProps) {
         <div className="flex items-start justify-between p-4 border-b border-[#2A2A2A] bg-transparent">
           <div className='flex flex-col justify-center items-start'>
             <h3 className="text-lg font-semibold text-[#E0E0E0]"> LLM Disponíveis para uso </h3>
-            <p className="text-base text-[#E0E0E0]/80 mt-2"> Para chamar uma LLM, use o comando @ seguido do nome do modelo desejado. Exemplo: @model_name. </p>
+            <p className="text- text-[#E0E0E0]/80 mt-2"> Para chamar uma LLM, use o comando @ seguido do nome do modelo desejado. Exemplo: @model_name. </p>
           </div>
           <button
             onClick={onClose}
             className="text-[#A0A0A0] hover:text-[#E0E0E0] transition-colors mt-1"
           >
-            <X className="w-5 h-5" />
+            <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
           </button>
         </div>
         <div className="p-0 max-h-[60vh] overflow-y-auto">

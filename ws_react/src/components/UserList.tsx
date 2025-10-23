@@ -1,6 +1,7 @@
-import { Users, Circle, User } from 'lucide-react';
 import { motion, easeOut } from 'framer-motion';
 import type { ChatUser } from '../../types/chat';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers, faCircle, faUser } from '@fortawesome/free-solid-svg-icons';
 
 interface UserListProps {
   users: ChatUser[];
@@ -58,7 +59,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
     >
       <div className="flex items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <Users className="w-5 h-5 text-background" />
+          <FontAwesomeIcon icon={faUsers} className="w-5 h-5 text-background" />
           <h2 className="text-lg font-semibold text-[#E0E0E0]">
             Online ({totalOnlineUsers})
           </h2>
@@ -102,9 +103,9 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
               >
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center">
-                    <User className="w-5 h-5 text-[#121212]" />
+                    <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-[#121212]" />
                   </div>
-                  <Circle className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
+                  <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[#E0E0E0] font-medium text-base truncate">
@@ -121,7 +122,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
             {otherOnlineUsers.map((user, index) => (
               <motion.div
                 key={user.id}
-                className="flex items-center gap-3 p-3 rounded-xl bg-[#121212] border border-[#2A2A2A]"
+                className="flex items-center gap-3 p-3 rounded-full bg-transparent border border-[#2A2A2A]"
                 variants={itemVariants}
                 initial="hidden"
                 animate="visible"
@@ -137,7 +138,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
                       {user.display_name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <Circle className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
+                  <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[#E0E0E0] font-medium text-sm truncate">

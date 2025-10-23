@@ -1,4 +1,5 @@
-import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWifi, faPlug, faRotate } from '@fortawesome/free-solid-svg-icons';
 
 interface ConnectionStatusProps {
     isConnected: boolean;
@@ -10,7 +11,7 @@ export function ConnectionStatus({ isConnected, reconnectAttempt, onReconnect }:
     if (isConnected) {
         return (
             <div className="flex items-center gap-2 text-[#22C55E] text-sm">
-                <Wifi className="w-4 h-4" />
+                <FontAwesomeIcon icon={faWifi} className="w-4 h-4" />
                 <span>Conectado</span>
             </div>
         );
@@ -19,7 +20,7 @@ export function ConnectionStatus({ isConnected, reconnectAttempt, onReconnect }:
     return (
         <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-[#EF4444] text-sm">
-                <WifiOff className="w-4 h-4" />
+                <FontAwesomeIcon icon={faPlug} className="w-4 h-4" />
                 <span>
                     {reconnectAttempt > 0 ? `Reconectando... (${reconnectAttempt})` : 'Desconectado'}
                 </span>
@@ -30,7 +31,7 @@ export function ConnectionStatus({ isConnected, reconnectAttempt, onReconnect }:
                 title="Reconectar"
                 aria-label="Reconectar"
             >
-                <RefreshCw className="w-4 h-4" />
+                <FontAwesomeIcon icon={faRotate} className="w-4 h-4" />
             </button>
         </div>
     );
