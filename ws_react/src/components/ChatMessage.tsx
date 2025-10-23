@@ -1,7 +1,7 @@
 import type { ChatMessage as ChatMessageType } from '../../types/chat';
 
 interface ChatMessageProps {
-    message: ChatMessageType & { isLLM?: boolean };
+    message: ChatMessageType & { isLLM?: boolean; provider?: string };
     isOwnMessage: boolean;
 }
 
@@ -11,8 +11,8 @@ export function ChatMessage({ message, isOwnMessage }: ChatMessageProps) {
         return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     };
 
-    // Verificar se é uma mensagem da LLM
-    const isLLMMessage = message.isLLM || message.user_id === 'llm';
+    // Verificar se é uma mensagem da LLM de forma mais robusta
+    const isLLMMessage = message.isLLM || message.user_id === 'llm' || (message as any).id?.startsWith('llm-');
 
     return (
         <div className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-4`}>
@@ -24,7 +24,7 @@ export function ChatMessage({ message, isOwnMessage }: ChatMessageProps) {
                 )}
                 {isLLMMessage && (
                     <span className="text-xs text-[#A0A0A0] mb-1.5 px-1">
-                        Assistente LLM
+                        Assistente LLM{message.provider ? ` (${message.provider})` : ''}
                     </span>
                 )}
                 <div

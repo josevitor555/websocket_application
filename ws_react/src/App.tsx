@@ -12,6 +12,8 @@ import { useAuth } from './hooks/useAuth';
 import { useTypingIndicator } from './hooks/useTypingIndicator';
 import { userService, messageService } from './lib/api';
 import { llmService } from './services/llmService';
+import { llmMessageService } from './services/llmMessageService';
+import { clearLLMErrorMessagesFromLocalStorage } from './utils/clearLLMErrors';
 import type { ChatMessage as ChatMessageType, ChatUser } from '../types/chat';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
@@ -31,6 +33,12 @@ function ChatApp() {
   const socketRef = useRef<Socket | null>(null);
   const navigate = useNavigate();
   const hasLoadedInitialMessages = useRef(false);
+
+  // Limpar mensagens de erro LLM do localStorage ao carregar a aplicação
+  useEffect(() => {
+    console.log('[App] Limpando mensagens de erro LLM do localStorage...');
+    clearLLMErrorMessagesFromLocalStorage();
+  }, []);
 
   // Initialize WebSocket connection
   useEffect(() => {
@@ -68,41 +76,50 @@ function ChatApp() {
         try {
           // Carregar histórico de mensagens do chat
           const messagesData = await messageService.getHistory(100);
+          let allMessages: ChatMessageType[] = [];
+          let validMessages: ChatMessageType[] = [];
+          
           if (messagesData) {
             // Filtrar mensagens para garantir que todas tenham ID válido
-            const validMessages = messagesData.filter(msg => msg && msg.id);
-            
-            // Carregar histórico de interações com LLM
-            try {
-              const llmInteractions = await llmService.getUserInteractions(currentUser.id, 50);
-              console.log('[App] Interações LLM carregadas:', llmInteractions?.length || 0);
-              
-              // Converter interações LLM em mensagens do chat
-              const llmMessages = llmInteractions.map((interaction: any) => ({
-                id: `llm-${interaction.id}`,
-                user_id: 'llm',
-                message: `Resposta do ${interaction.llm_providers?.name || 'LLM'}: ${interaction.response}`,
-                created_at: interaction.created_at,
-                isLLM: true
-              }));
-              
-              // Combinar mensagens do chat com mensagens LLM
-              const allMessages = [...validMessages, ...llmMessages];
-              
-              // Ordenar todas as mensagens por data de criação
-              allMessages.sort((a, b) => 
-                new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-              );
-              
-              setMessages(allMessages);
-            } catch (llmError) {
-              console.error('[App] Erro ao carregar interações LLM:', llmError);
-              // Se houver erro ao carregar interações LLM, mostrar apenas as mensagens do chat
-              setMessages(validMessages);
-            }
-            
-            hasLoadedInitialMessages.current = true;
+            validMessages = messagesData.filter(msg => msg && msg.id);
+            allMessages = [...validMessages];
           }
+          
+          // Carregar mensagens LLM do localStorage primeiro (para exibição imediata)
+          const localLLMMessages = llmMessageService.loadLLMMessagesFromLocalStorage();
+          console.log('[App] Mensagens LLM carregadas do localStorage:', localLLMMessages?.length || 0);
+          
+          // Combinar mensagens do chat com mensagens LLM do localStorage
+          allMessages = [...allMessages, ...localLLMMessages];
+          
+          // Carregar histórico de mensagens LLM do banco de dados (para atualizar com dados reais)
+          try {
+            const dbLLMMessages = await llmMessageService.getUserLLMMessages(currentUser.id, 50);
+            console.log('[App] Mensagens LLM carregadas do banco de dados:', dbLLMMessages?.length || 0);
+            
+            // Filtrar mensagens LLM do localStorage que já foram persistidas no banco
+            const persistedLLMMessageIds = new Set(dbLLMMessages.map(msg => msg.llm_interaction_id));
+            const nonPersistedLocalMessages = localLLMMessages.filter(msg => 
+              !msg.llm_interaction_id || !persistedLLMMessageIds.has(msg.llm_interaction_id)
+            );
+            
+            // Combinar mensagens do chat com mensagens LLM do banco e mensagens locais não persistidas
+            allMessages = [...validMessages, ...dbLLMMessages, ...nonPersistedLocalMessages];
+            
+            // Atualizar o localStorage com as mensagens mais recentes do banco
+            llmMessageService.saveLLMMessagesToLocalStorage([...dbLLMMessages, ...nonPersistedLocalMessages]);
+          } catch (llmError) {
+            console.error('[App] Erro ao carregar mensagens LLM do banco de dados:', llmError);
+            // Usar apenas as mensagens do localStorage e do chat em caso de erro
+          }
+          
+          // Ordenar todas as mensagens por data de criação
+          allMessages.sort((a, b) => 
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
+          
+          setMessages(allMessages);
+          hasLoadedInitialMessages.current = true;
         } catch (error) {
           console.error('Error loading initial messages:', error);
         }
@@ -301,61 +318,64 @@ function ChatApp() {
           try {
             const response = await llmService.testLLM(llm.id, message, currentUser.id, sessionToken);
           
-          if (response.success && response.response) {
-            // Criar uma mensagem simulada da LLM para exibir na UI
-            const llmMessage = {
-              id: `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-              user_id: 'llm', // ID especial para identificar mensagens da LLM
-              message: `Resposta do ${llm.name}: ${response.response}`,
-              created_at: new Date().toISOString(),
-              isLLM: true // Flag para identificar mensagens da LLM
-            };
+            if (response.success && response.response) {
+              // Criar uma mensagem simulada da LLM para exibir na UI usando o novo serviço
+              const llmMessage = llmMessageService.createSimulatedLLMMessage(
+                response.response, 
+                llm.name, 
+                currentUser.id
+              );
+              
+              // Adicionar a mensagem da LLM ao estado de mensagens
+              setMessages((prev) => [...prev, llmMessage]);
+              
+              // Salvar no localStorage para persistência temporária
+              llmMessageService.addLLMMessageToLocalStorage(llmMessage);
+              
+              // Logar no console também
+              console.log(`[LLM Test] Resposta do ${llm.name}:`, response.response);
+              console.log(`[LLM Test] Tokens usados:`, response.usage);
+            } else {
+              // Criar uma mensagem de erro da LLM para exibir na UI usando o novo serviço
+              const errorMessage = llmMessageService.createErrorLLMMessage(
+                response.error || 'Erro desconhecido', 
+                llm.name, 
+                currentUser.id
+              );
+              
+              // Adicionar a mensagem de erro ao estado de mensagens
+              setMessages((prev) => [...prev, errorMessage]);
+              
+              // Salvar no localStorage para persistência temporária
+              llmMessageService.addLLMMessageToLocalStorage(errorMessage);
+              
+              // Logar erro no console
+              console.log(`[LLM Test] Erro ao obter resposta do ${llm.name}:`, response.error || 'Erro desconhecido');
+            }
+          } catch (error) {
+            console.error('[LLM Test] Erro ao chamar LLM:', error);
             
-            // Adicionar a mensagem da LLM ao estado de mensagens
-            setMessages((prev) => [...prev, llmMessage]);
-            
-            // Logar no console também
-            console.log(`[LLM Test] Resposta do ${llm.name}:`, response.response);
-            console.log(`[LLM Test] Tokens usados:`, response.usage);
-          } else {
-            // Criar uma mensagem de erro da LLM para exibir na UI
-            const errorMessage = {
-              id: `llm-error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-              user_id: 'llm',
-              message: `Erro ao obter resposta do ${llm.name}: ${response.error || 'Erro desconhecido'}`,
-              created_at: new Date().toISOString(),
-              isLLM: true
-            };
+            // Criar uma mensagem de erro da LLM para exibir na UI usando o novo serviço
+            const errorMessage = llmMessageService.createErrorLLMMessage(
+              (error as Error).message, 
+              llm.name, 
+              currentUser.id
+            );
             
             // Adicionar a mensagem de erro ao estado de mensagens
             setMessages((prev) => [...prev, errorMessage]);
             
-            // Logar erro no console
-            console.log(`[LLM Test] Erro ao obter resposta do ${llm.name}:`, response.error || 'Erro desconhecido');
+            // Salvar no localStorage para persistência temporária
+            llmMessageService.addLLMMessageToLocalStorage(errorMessage);
           }
-        } catch (error) {
-          console.error('[LLM Test] Erro ao chamar LLM:', error);
-          
-          // Criar uma mensagem de erro da LLM para exibir na UI
-          const errorMessage = {
-            id: `llm-error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            user_id: 'llm',
-            message: `Erro ao chamar ${llm.name}: ${(error as Error).message}`,
-            created_at: new Date().toISOString(),
-            isLLM: true
-          };
-          
-          // Adicionar a mensagem de erro ao estado de mensagens
-          setMessages((prev) => [...prev, errorMessage]);
+        } else {
+          console.log('[App] Nenhum modelo correspondente encontrado para:', modelName);
         }
-      } else {
-        console.log('[App] Nenhum modelo correspondente encontrado para:', modelName);
       }
+    } else {
+      console.log('[App] Nenhuma menção encontrada ou usuário não autenticado');
     }
-  } else {
-    console.log('[App] Nenhuma menção encontrada ou usuário não autenticado');
-  }
-};
+  };
 
   const handleTyping = () => {
     if (!isConnected || !currentUser || !socketRef.current) return;
