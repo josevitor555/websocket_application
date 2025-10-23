@@ -17,6 +17,8 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('[ChatInput] handleSubmit chamado com mensagem:', message);
+        
         if (message.trim() && !disabled) {
             onSendMessage(message.trim());
             setMessage('');

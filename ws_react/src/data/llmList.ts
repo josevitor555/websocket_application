@@ -8,6 +8,8 @@ export interface LLM {
     logoUrl: string;
 }
 
+console.log('[LLMList] Arquivo carregado');
+
 // Predefined list of LLMs organized by company with logo URLs
 export const llmList: LLM[] = [
     // OpenAI
@@ -36,6 +38,14 @@ export const llmList: LLM[] = [
         logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png'
     },
     // Google
+    {
+        id: 'gemma-3-1b-it',
+        name: 'Gemma 3 1B IT',
+        company: 'Google',
+        description: 'Disponível para uso',
+        isSelected: false,
+        logoUrl: 'https://images.seeklogo.com/logo-png/62/1/google-gemini-icon-logo-png_seeklogo-623016.png'
+    },
     {
         id: 'gemini-flash',
         name: 'Gemini 1.5 Flash',
@@ -112,3 +122,5 @@ export const llmList: LLM[] = [
         logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqKHD28rGat3WVaqRkRDgIL-SHgOTHB6MrNg&s'
     }
 ];
+
+console.log('[LLMList] Lista de LLMs carregada:', llmList.length, 'modelos');

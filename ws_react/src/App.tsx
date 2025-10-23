@@ -11,11 +11,14 @@ import { SectionList } from './components/SectionList';
 import { useAuth } from './hooks/useAuth';
 import { useTypingIndicator } from './hooks/useTypingIndicator';
 import { userService, messageService } from './lib/api';
+import { llmService } from './services/llmService';
 import type { ChatMessage as ChatMessageType, ChatUser } from '../types/chat';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { motion, easeOut } from 'framer-motion';
 import { io, Socket } from 'socket.io-client';
+
+console.log('[App] Serviço LLM carregado:', llmService);
 
 function ChatApp() {
   const { currentUser, sessionToken, logout, loading } = useAuth();
@@ -63,11 +66,41 @@ function ChatApp() {
       // Carregar histórico de mensagens quando autenticado
       if (!hasLoadedInitialMessages.current) {
         try {
+          // Carregar histórico de mensagens do chat
           const messagesData = await messageService.getHistory(100);
           if (messagesData) {
             // Filtrar mensagens para garantir que todas tenham ID válido
             const validMessages = messagesData.filter(msg => msg && msg.id);
-            setMessages(validMessages);
+            
+            // Carregar histórico de interações com LLM
+            try {
+              const llmInteractions = await llmService.getUserInteractions(currentUser.id, 50);
+              console.log('[App] Interações LLM carregadas:', llmInteractions?.length || 0);
+              
+              // Converter interações LLM em mensagens do chat
+              const llmMessages = llmInteractions.map((interaction: any) => ({
+                id: `llm-${interaction.id}`,
+                user_id: 'llm',
+                message: `Resposta do ${interaction.llm_providers?.name || 'LLM'}: ${interaction.response}`,
+                created_at: interaction.created_at,
+                isLLM: true
+              }));
+              
+              // Combinar mensagens do chat com mensagens LLM
+              const allMessages = [...validMessages, ...llmMessages];
+              
+              // Ordenar todas as mensagens por data de criação
+              allMessages.sort((a, b) => 
+                new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+              );
+              
+              setMessages(allMessages);
+            } catch (llmError) {
+              console.error('[App] Erro ao carregar interações LLM:', llmError);
+              // Se houver erro ao carregar interações LLM, mostrar apenas as mensagens do chat
+              setMessages(validMessages);
+            }
+            
             hasLoadedInitialMessages.current = true;
           }
         } catch (error) {
@@ -184,13 +217,145 @@ function ChatApp() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = (message: string) => {
-    if (!isConnected || !socketRef.current) return;
+  const handleSendMessage = async (message: string) => {
+    console.log('[App] handleSendMessage chamado com mensagem:', message);
+    
+    if (!isConnected || !socketRef.current || !currentUser || !sessionToken) {
+      console.log('[App] Condições não atendidas - isConnected:', isConnected, 'socketRef.current:', !!socketRef.current, 'currentUser:', !!currentUser, 'sessionToken:', !!sessionToken);
+      return;
+    }
 
+    // Verificar se a mensagem contém menções a LLMs (@nome_do_modelo)
+    const llmMentionRegex = /@(\w+)/g;
+    const mentions = message.match(llmMentionRegex);
+    
+    console.log('[App] Menções encontradas:', mentions);
+    
+    // Sempre enviar a mensagem original do usuário primeiro
+    console.log('[App] Enviando mensagem original:', message);
     socketRef.current.emit('send_message', {
       message,
     });
-  };
+    
+    // Processar menções a LLMs após enviar a mensagem do usuário
+    if (mentions && mentions.length > 0 && currentUser) {
+      console.log('[App] Processando menções...');
+      
+      // Importar a lista de LLMs uma vez
+      let llmListData;
+      try {
+        const llmListModule = await import('./data/llmList');
+        llmListData = llmListModule.llmList;
+        console.log('[App] Lista de LLMs carregada:', llmListData.length, 'modelos');
+        
+        // Verificar especificamente por modelos Gemma
+        const gemmaModels = llmListData.filter((llm: any) => 
+          llm.id.toLowerCase().includes('gemma') || 
+          llm.name.toLowerCase().includes('gemma')
+        );
+        
+        console.log('[App] Modelos Gemma disponíveis:', gemmaModels.map((m: any) => m.id));
+      } catch (error) {
+        console.error('[App] Erro ao carregar lista de LLMs:', error);
+        return;
+      }
+      
+      // Processar cada menção a LLM
+      for (const mention of mentions) {
+        const modelName = mention.substring(1); // Remover o @
+        console.log('[App] Nome do modelo extraído:', modelName);
+        
+        // Verificação específica para Gemma
+        if (modelName.toLowerCase() === 'gemma') {
+          console.log('[App] Menção direta a Gemma detectada');
+          
+          // Procurar qualquer modelo que contenha "gemma"
+          const gemmaModel = llmListData.find((l: any) => 
+            l.id.toLowerCase().includes('gemma') || 
+            l.name.toLowerCase().includes('gemma')
+          );
+          
+          if (gemmaModel) {
+            console.log('[App] Modelo Gemma encontrado:', gemmaModel.name);
+            // Usar este modelo
+          } else {
+            console.log('[App] Nenhum modelo Gemma encontrado na lista');
+            // Continuar com a busca normal
+          }
+        }
+        
+        // Verificar se é um modelo LLM válido
+        const llm = llmListData.find((l: any) => {
+          const match = l.id.toLowerCase().includes(modelName.toLowerCase()) || 
+                        l.name.toLowerCase().includes(modelName.toLowerCase());
+          console.log(`[App] Verificando modelo ${l.name} (id: ${l.id}) - match: ${match}`);
+          return match;
+        });
+        
+        if (llm) {
+          console.log('[App] Modelo encontrado:', llm.name);
+          
+          // Chamar o modelo LLM real e mostrar resposta na UI
+          console.log(`[LLM Test] Mensagem para ${llm.name}: ${message}`);
+          
+          try {
+            const response = await llmService.testLLM(llm.id, message, currentUser.id, sessionToken);
+          
+          if (response.success && response.response) {
+            // Criar uma mensagem simulada da LLM para exibir na UI
+            const llmMessage = {
+              id: `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              user_id: 'llm', // ID especial para identificar mensagens da LLM
+              message: `Resposta do ${llm.name}: ${response.response}`,
+              created_at: new Date().toISOString(),
+              isLLM: true // Flag para identificar mensagens da LLM
+            };
+            
+            // Adicionar a mensagem da LLM ao estado de mensagens
+            setMessages((prev) => [...prev, llmMessage]);
+            
+            // Logar no console também
+            console.log(`[LLM Test] Resposta do ${llm.name}:`, response.response);
+            console.log(`[LLM Test] Tokens usados:`, response.usage);
+          } else {
+            // Criar uma mensagem de erro da LLM para exibir na UI
+            const errorMessage = {
+              id: `llm-error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              user_id: 'llm',
+              message: `Erro ao obter resposta do ${llm.name}: ${response.error || 'Erro desconhecido'}`,
+              created_at: new Date().toISOString(),
+              isLLM: true
+            };
+            
+            // Adicionar a mensagem de erro ao estado de mensagens
+            setMessages((prev) => [...prev, errorMessage]);
+            
+            // Logar erro no console
+            console.log(`[LLM Test] Erro ao obter resposta do ${llm.name}:`, response.error || 'Erro desconhecido');
+          }
+        } catch (error) {
+          console.error('[LLM Test] Erro ao chamar LLM:', error);
+          
+          // Criar uma mensagem de erro da LLM para exibir na UI
+          const errorMessage = {
+            id: `llm-error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            user_id: 'llm',
+            message: `Erro ao chamar ${llm.name}: ${(error as Error).message}`,
+            created_at: new Date().toISOString(),
+            isLLM: true
+          };
+          
+          // Adicionar a mensagem de erro ao estado de mensagens
+          setMessages((prev) => [...prev, errorMessage]);
+        }
+      } else {
+        console.log('[App] Nenhum modelo correspondente encontrado para:', modelName);
+      }
+    }
+  } else {
+    console.log('[App] Nenhuma menção encontrada ou usuário não autenticado');
+  }
+};
 
   const handleTyping = () => {
     if (!isConnected || !currentUser || !socketRef.current) return;
@@ -362,21 +527,14 @@ function ChatApp() {
             variants={itemVariants}
           >
             <div className="flex-1 overflow-y-auto p-6 space-y-1">
-              {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-[#fafafa] text-center">
-                    Nenhuma mensagem ainda. Seja o primeiro a enviar uma mensagem!
-                  </p>
-                </div>
-              ) : (
-                messages.map((message) => (
-                  <ChatMessage
-                    key={message.id || `temp-${message.created_at}-${message.message.substring(0, 10)}`}
-                    message={message}
-                    isOwnMessage={message.user_id === currentUser.id}
-                  />
-                ))
-              )}
+              {messages.map((message) => (
+                <ChatMessage
+                  key={message.id || `temp-${message.created_at}-${message.message.substring(0, 10)}`}
+                  message={message}
+                  isOwnMessage={message.user_id === currentUser.id}
+                />
+              ))}
+
               <div ref={messagesEndRef} />
             </div>
 

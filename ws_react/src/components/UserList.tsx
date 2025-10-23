@@ -57,7 +57,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
       animate="visible"
       variants={containerVariants}
     >
-      <div className="flex items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col items-start justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
           <FontAwesomeIcon icon={faUsers} className="w-5 h-5 text-background" />
           <h2 className="text-lg font-semibold text-[#E0E0E0]">
@@ -134,9 +134,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
               >
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center">
-                    <span className="text-[#E0E0E0] font-semibold text-sm">
-                      {user.display_name.charAt(0).toUpperCase()}
-                    </span>
+                    <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-[#121212]" />
                   </div>
                   <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
                 </div>
