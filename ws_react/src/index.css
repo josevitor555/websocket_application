@@ -188,5 +188,6 @@
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
     font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    background-color: #0f0f10; /* Garantir fundo escuro */
   }
 }

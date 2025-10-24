@@ -5,6 +5,9 @@ import './index.css'
 import './App.css'
 import App from './App.tsx'
 
+// Garantir que o modo dark esteja ativado
+document.documentElement.classList.add('dark')
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>

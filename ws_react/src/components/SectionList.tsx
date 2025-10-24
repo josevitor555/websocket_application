@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion, easeOut } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -9,9 +10,12 @@ import {
   faComment,
   faChartBar,
   faNetworkWired,
-  faPaintBrush
+  faPaintBrush,
+  // faStar
 } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import UpdatePlanPro from './ui/updatePlanPro';
+import PlanModal from './PlanModal';
 
 // Tipo para seções de chat
 export interface ChatSection {
@@ -41,6 +45,16 @@ interface SectionListProps {
 }
 
 export function SectionList({ onSectionSelect, isInModal = false, sections }: SectionListProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   // Animation variants for slide-in from left effect
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -90,7 +104,7 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
     >
       {!isInModal && (
         <div className="flex items-center gap-3 p-6 pb-0">
-          <FontAwesomeIcon icon={faRobot} className="w-5 h-5 text-background mb-4" />
+          <FontAwesomeIcon icon={faRobot} className="w-5 h-5 text-[#fafafa] mb-4" />
           <h2 className="text-lg font-semibold text-[#E0E0E0] mb-4">
             Seções de Chat
           </h2>
@@ -115,8 +129,8 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
                     key={section.id}
                     onClick={() => onSectionSelect?.(section.id)}
                     className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${index === 0 && dateIndex === 0
-                        ? 'bg-white/10 border border-[#2A2A2A]'
-                        : 'bg-transparent border border-[#2A2A2A] hover:bg-white/5'
+                      ? 'bg-white/[0.05] backdrop-blur-3xl border border-gray-50'
+                      : 'bg-white/[0.05] backdrop-blur-3xl border'
                       }`}
                     variants={itemVariants}
                     initial="hidden"
@@ -147,16 +161,14 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
 
       {/* Botão de atualização para plano Pro */}
       <div className="p-6">
-        <button
-          className="w-full bg-white/[0.05] backdrop-blur-3xl border border-white/[0.3] text-white font-light py-3 px-4 rounded-full cursor-pointer transition-all duration-300 transform hover:scale-[1.02]"
-          onClick={() => console.log('Atualizar para plano Pro')}
-        >
-          <span className="flex items-center justify-center gap-2">
-            <FontAwesomeIcon icon={faChartBar} className="text-white" />
-            Atualize para o plano PRO
-          </span>
-        </button>
+        <UpdatePlanPro 
+          text="Atualize para o plano PRO" 
+          onClick={handleOpenModal}
+        />
       </div>
+      
+      {/* Modal de Planos */}
+      <PlanModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 }

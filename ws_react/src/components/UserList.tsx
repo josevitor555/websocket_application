@@ -91,7 +91,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
             {/* Exibir o usuário atual primeiro, se estiver online */}
             {currentUser && currentUser.is_online && (
               <motion.div
-                className="flex items-center gap-3 py-3 px-4 rounded-full border border-[#2A2A2A]"
+                className="flex items-center gap-3 py-3 px-4 bg-white/[0.05] backdrop-blur-3xl rounded-full"
                 variants={itemVariants}
                 initial="hidden"
                 animate="visible"
@@ -102,10 +102,10 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
                 }}
               >
                 <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center">
-                    <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-[#121212]" />
+                  <div className="w-10 h-10 bg-white/[0.05] backdrop-blur-3xl rounded-2xl flex items-center justify-center">
+                    <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-[#fafafa]" />
                   </div>
-                  <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
+                  <FontAwesomeIcon icon={faCircle} className="w-2 h-2 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[#E0E0E0] font-medium text-base truncate">
@@ -134,7 +134,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
               >
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center">
-                    <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-[#121212]" />
+                    <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-[#fafafa]" />
                   </div>
                   <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] fill-[#22C55E] absolute bottom-0 right-0" />
                 </div>

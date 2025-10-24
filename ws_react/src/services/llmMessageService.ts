@@ -184,7 +184,12 @@ export const llmMessageService = {
       const response = await apiRequest<any[]>(`/api/llm/interactions/user/${userId}?limit=${limit}`);
       
       // Converter interações em mensagens
-      return response.map(interaction => this.convertInteractionToMessage(interaction));
+      const messages = response.map(interaction => this.convertInteractionToMessage(interaction));
+      
+      // Ordenar mensagens por data de criação (crescente) para manter a ordem cronológica
+      return messages.sort((a, b) => 
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
     } catch (error) {
       console.error('[LLM Message Service] Erro ao obter mensagens LLM:', error);
       return [];
@@ -199,11 +204,14 @@ export const llmMessageService = {
    * @returns Mensagem simulada
    */
   createSimulatedLLMMessage(response: string, modelName: string, userId: string): LLMMessage {
+    // Usar um timestamp ligeiramente posterior para garantir que a mensagem LLM apareça após a do usuário
+    const timestamp = new Date(Date.now() + 500).toISOString(); // Reduzido o tempo para 500ms
+    
     return {
       id: `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       user_id: 'llm',
       message: response,
-      created_at: new Date().toISOString(),
+      created_at: timestamp,
       isLLM: true,
       provider: modelName
     };
@@ -217,11 +225,14 @@ export const llmMessageService = {
    * @returns Mensagem de erro simulada
    */
   createErrorLLMMessage(error: string, modelName: string, userId: string): LLMMessage {
+    // Usar um timestamp ligeiramente posterior para garantir que a mensagem LLM apareça após a do usuário
+    const timestamp = new Date(Date.now() + 500).toISOString(); // Reduzido o tempo para 500ms
+    
     return {
       id: `llm-error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       user_id: 'llm',
       message: `Erro ao obter resposta do ${modelName}: ${error}`,
-      created_at: new Date().toISOString(),
+      created_at: timestamp,
       isLLM: true,
       provider: modelName,
       isError: true

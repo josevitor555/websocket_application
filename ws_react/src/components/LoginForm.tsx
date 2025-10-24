@@ -65,7 +65,7 @@ export function LoginForm() {
                     variants={itemVariants}
                 >
                     <div className="bg-background p-4 rounded-full">
-                        <FontAwesomeIcon icon={faUser} className="w-8 h-8 text-[#222222]" />
+                        <FontAwesomeIcon icon={faUser} className="w-8 h-8 text-[#E0E0E0]" />
                     </div>
                 </motion.div>
 
@@ -128,7 +128,7 @@ export function LoginForm() {
                     <motion.div variants={itemVariants}>
                         <button
                             type="submit"
-                            className="w-full bg-background text-[#222222] font-semibold py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                            className="w-full bg-[#E0E0E0] text-[#1c1c1f] font-semibold py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
                             disabled={loading}
                         >
                             {loading ? 'Entrando...' : 'Entrar'}

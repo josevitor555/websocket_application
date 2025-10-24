@@ -113,7 +113,7 @@ function ChatApp() {
             // Usar apenas as mensagens do localStorage e do chat em caso de erro
           }
           
-          // Ordenar todas as mensagens por data de criação
+          // Ordenar todas as mensagens por data de criação (crescente)
           allMessages.sort((a, b) => 
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
           );
@@ -143,7 +143,12 @@ function ChatApp() {
           if (messageExists) {
             return prev;
           }
-          return [...prev, message];
+          
+          // Adicionar nova mensagem e ordenar por data de criação (crescente)
+          const newMessages = [...prev, message];
+          return newMessages.sort((a, b) => 
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
         });
       } else {
         console.warn('[App] Received message without valid ID:', message);
@@ -166,7 +171,12 @@ function ChatApp() {
             if (messageExists) {
               return prev;
             }
-            return [...prev, messageWithTempId];
+            
+            // Adicionar nova mensagem e ordenar por data de criação (crescente)
+            const newMessages = [...prev, messageWithTempId];
+            return newMessages.sort((a, b) => 
+              new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            );
           });
         }
       }
@@ -326,8 +336,13 @@ function ChatApp() {
                 currentUser.id
               );
               
-              // Adicionar a mensagem da LLM ao estado de mensagens
-              setMessages((prev) => [...prev, llmMessage]);
+              // Adicionar a mensagem da LLM ao estado de mensagens com ordenação correta
+              setMessages((prev) => {
+                const newMessages = [...prev, llmMessage];
+                return newMessages.sort((a, b) => 
+                  new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                );
+              });
               
               // Salvar no localStorage para persistência temporária
               llmMessageService.addLLMMessageToLocalStorage(llmMessage);
@@ -343,8 +358,13 @@ function ChatApp() {
                 currentUser.id
               );
               
-              // Adicionar a mensagem de erro ao estado de mensagens
-              setMessages((prev) => [...prev, errorMessage]);
+              // Adicionar a mensagem de erro ao estado de mensagens com ordenação correta
+              setMessages((prev) => {
+                const newMessages = [...prev, errorMessage];
+                return newMessages.sort((a, b) => 
+                  new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                );
+              });
               
               // Salvar no localStorage para persistência temporária
               llmMessageService.addLLMMessageToLocalStorage(errorMessage);
@@ -362,8 +382,13 @@ function ChatApp() {
               currentUser.id
             );
             
-            // Adicionar a mensagem de erro ao estado de mensagens
-            setMessages((prev) => [...prev, errorMessage]);
+            // Adicionar a mensagem de erro ao estado de mensagens com ordenação correta
+            setMessages((prev) => {
+              const newMessages = [...prev, errorMessage];
+              return newMessages.sort((a, b) => 
+                new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+              );
+            });
             
             // Salvar no localStorage para persistência temporária
             llmMessageService.addLLMMessageToLocalStorage(errorMessage);
@@ -431,20 +456,39 @@ function ChatApp() {
 
   return (
     <motion.div
-      className="min-h-screen bg-[#1c1c1f]"
+      className="min-h-screen relative"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
+      {/* Background pattern dark mode with grid lines and radial gradient */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-[#0f0f10]">
+        {/* Grid pattern only around the radial gradient area */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_400px_at_100%_0%,rgba(160,160,160,0.25),transparent)]"></div>
+        {/* Visible grid lines only in the radial area */}
+        <div 
+          className="absolute inset-0 opacity-60" 
+          style={{ 
+            backgroundImage: `
+              linear-gradient(to right, #a0a0a0 1px, transparent 1px),
+              linear-gradient(to bottom, #a0a0a0 1px, transparent 1px)
+            `,
+            backgroundSize: '3rem 2rem',
+            mask: 'radial-gradient(circle 200px at 100% 0%, white, transparent)',
+            WebkitMask: 'radial-gradient(circle 320px at 100% 0%, white, transparent)'
+          }}
+        ></div>
+      </div>
+      
       <div className="w-full px-4 py-6 h-screen max-h-[100vh] flex flex-col">
         <motion.header
-          className="bg-transparent rounded-2xl p-4 mb-6 border border-[#2A2A2A] flex-shrink-0"
+          className="bg-white/[0.05] backdrop-blur-3xl rounded-2xl p-4 mb-6 border border-white/[0.3] flex-shrink-0"
           variants={itemVariants}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-background p-2 rounded-lg">
-                <FontAwesomeIcon icon={faComments} className="w-6 h-6 text-[#2A2A2A]" />
+                <FontAwesomeIcon icon={faComments} className="w-6 h-6 text-[#fafafa]" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-[#E0E0E0]"> LLM Battle Royale </h1>
