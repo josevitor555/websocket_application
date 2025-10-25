@@ -204,8 +204,8 @@ export const llmMessageService = {
    * @returns Mensagem simulada
    */
   createSimulatedLLMMessage(response: string, modelName: string, userId: string): LLMMessage {
-    // Usar um timestamp ligeiramente posterior para garantir que a mensagem LLM apareça após a do usuário
-    const timestamp = new Date(Date.now() + 500).toISOString(); // Reduzido o tempo para 500ms
+    // Usar o timestamp atual - o App.tsx cuidará de ajustar o timing para garantir a ordem correta
+    const timestamp = new Date().toISOString();
     
     return {
       id: `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -225,8 +225,8 @@ export const llmMessageService = {
    * @returns Mensagem de erro simulada
    */
   createErrorLLMMessage(error: string, modelName: string, userId: string): LLMMessage {
-    // Usar um timestamp ligeiramente posterior para garantir que a mensagem LLM apareça após a do usuário
-    const timestamp = new Date(Date.now() + 500).toISOString(); // Reduzido o tempo para 500ms
+    // Usar o timestamp atual - o App.tsx cuidará de ajustar o timing para garantir a ordem correta
+    const timestamp = new Date().toISOString();
     
     return {
       id: `llm-error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,

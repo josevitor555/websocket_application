@@ -19,7 +19,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Disponível para uso',
         isSelected: false,
-        logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png'
+        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
     },
     {
         id: 'gpt-4',
@@ -27,7 +27,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Disponível para uso',
         isSelected: false,
-        logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png'
+        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
     },
     {
         id: 'gpt-5',
@@ -35,7 +35,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Disponível para uso',
         isSelected: false,
-        logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png'
+        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
     },
     // Google
     {
@@ -86,7 +86,7 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Disponível para uso',
         isSelected: false,
-        logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png'
+        logoUrl: 'src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s"'
     },
     {
         id: 'grok-3',
@@ -94,7 +94,7 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Disponível para uso',
         isSelected: false,
-        logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png'
+        logoUrl: 'src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s"'
     },
     {
         id: 'grok-heavy',
@@ -102,7 +102,7 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Ainda indisponível',
         isSelected: false,
-        logoUrl: 'https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/grok.png'
+        logoUrl: 'src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s"'
     },
     // DeepSeek AI
     {

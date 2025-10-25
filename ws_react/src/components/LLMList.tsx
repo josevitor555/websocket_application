@@ -63,7 +63,7 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
 
       <div className={`${isInModal ? 'p-4' : 'p-6 pt-6'} flex-1 overflow-y-auto overflow-x-hidden`}>
         <div className="space-y-6 min-w-full">
-          {Object.entries(groupedLLMs).map(([company, companyLLMs], companyIndex) => (
+          {Object.entries(groupedLLMs).map(([company, companyLLMs]) => (
             <motion.div 
               key={company}
               variants={containerVariants}
@@ -98,6 +98,18 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                           src={llm.logoUrl}
                           alt={`${llm.name} logo`}
                           className="w-6 h-6 object-contain"
+                          onError={(e) => {
+                            // Em caso de erro no carregamento da imagem, definir um fallback
+                            const target = e.target as HTMLImageElement;
+                            // Criar um SVG fallback com as iniciais do nome do modelo
+                            const initials = llm.name.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
+                            target.outerHTML = `
+                              <div class="w-6 h-6 rounded-full bg-[#2A2A2A] flex items-center justify-center">
+                                <span class="text-[#E0E0E0] text-xs font-bold">${initials}</span>
+                              </div>
+                            `;
+                          }}
+                          loading="lazy"
                         />
                       </div>
                       {llm.isSelected && (

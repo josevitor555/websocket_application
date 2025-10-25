@@ -491,7 +491,7 @@ function ChatApp() {
                 <FontAwesomeIcon icon={faComments} className="w-6 h-6 text-[#fafafa]" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-[#E0E0E0]"> LLM Battle Royale </h1>
+                <h1 className="text-xl font-bold text-[#E0E0E0]"> IAArena </h1>
                 <p className="text-sm text-[#A0A0A0]">
                   Bem-vindo, {currentUser.display_name}
                 </p>
@@ -566,7 +566,7 @@ function ChatApp() {
                 // Seções temáticas
                 {
                   id: 'theme-1',
-                  title: 'LLM Battle Royale',
+                  title: 'IAArena',
                   icon: 'fa-robot',
                   date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
                 },

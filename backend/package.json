@@ -10,6 +10,7 @@
     "create-gemma": "node createGemmaProvider.js",
     "list-providers": "node listLLMProviders.js",
     "reset-chat": "node resetChatData.js",
+    "recreate-providers": "node recreateLLMProviders.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

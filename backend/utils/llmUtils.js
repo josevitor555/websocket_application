@@ -29,10 +29,10 @@ export function extractCodeFromResponse(text) {
  * @returns {string} Texto limpo
  */
 export function cleanLLMResponse(text) {
-  // Remover asteriscos usados para negrito
-  let cleaned = text.replace(/\*\*(.*?)\*\*/g, '$1');
+  // Substituir asteriscos usados para negrito por pontos
+  let cleaned = text.replace(/\*\*(.*?)\*\*/g, '$1.');
   
-  // Remover underscores usados para itálico
+  // Substituir underscores usados para itálico por texto normal (sem formatação)
   cleaned = cleaned.replace(/__(.*?)__/g, '$1');
   cleaned = cleaned.replace(/_(.*?)_/g, '$1');
   
@@ -41,6 +41,23 @@ export function cleanLLMResponse(text) {
   
   // Remover hashtags usadas para títulos
   cleaned = cleaned.replace(/^#+\s*(.*?)$/gm, '$1');
+  
+  // Garantir que não haja pontos duplicados
+  cleaned = cleaned.replace(/\.{2,}/g, '.');
+  
+  // Remover espaços extras antes de pontos
+  cleaned = cleaned.replace(/\s+\./g, '.');
+  
+  // Adicionar espaço após pontos, se não houver
+  cleaned = cleaned.replace(/\.([A-Za-z])/g, '. $1');
+  
+  // Corrigir possíveis problemas com pontos no final
+  cleaned = cleaned.replace(/\.{2,}/g, '.');
+  
+  // Garantir que o texto termine com ponto
+  if (cleaned.length > 0 && !/[.!?]$/.test(cleaned)) {
+    cleaned += '.';
+  }
   
   return cleaned.trim();
 }
@@ -137,14 +154,14 @@ export function validateLLMResponse(text) {
 /**
  * Converte uma resposta do LLM em diferentes formatos
  * @param {string} text - Texto da resposta do LLM
- * @param {string} format - Formato desejado ('text', 'html', 'markdown')
+ * @param {string} format - Formato desejado ('text', 'html', 'memory')
  * @returns {string} Texto convertido
  */
 export function convertLLMResponse(text, format) {
   switch (format) {
     case 'html':
       return formatLLMResponseForChat(text);
-    case 'markdown':
+    case 'memory':
       return text; // Já está em markdown
     case 'text':
     default:

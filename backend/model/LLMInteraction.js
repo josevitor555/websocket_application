@@ -38,12 +38,13 @@ class LLMInteraction {
     return data;
   }
 
-  static async findByUserId(userId) {
+  static async findByUserId(userId, limit = 50) {
     const { data, error } = await supabase
       .from('llm_interactions')
       .select('*, llm_providers(*), chat_users(*)')
       .eq('user_id', userId)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: true })
+      .limit(limit);
 
     if (error) {
       throw new Error(`Failed to fetch LLM interactions: ${error.message}`);
@@ -57,7 +58,7 @@ class LLMInteraction {
       .from('llm_interactions')
       .select('*, llm_providers(*), chat_users(*)')
       .eq('provider_id', providerId)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: true });
 
     if (error) {
       throw new Error(`Failed to fetch LLM interactions: ${error.message}`);
@@ -70,7 +71,7 @@ class LLMInteraction {
     const { data, error } = await supabase
       .from('llm_interactions')
       .select('*, llm_providers(*), chat_users(*)')
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: true })
       .limit(limit);
 
     if (error) {

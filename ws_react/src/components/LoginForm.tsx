@@ -73,7 +73,7 @@ export function LoginForm() {
                     className="text-2xl font-bold text-[#E0E0E0] text-center mb-2"
                     variants={itemVariants}
                 >
-                    LLM Battle Royale
+                    IAArena
                 </motion.h1>
                 
                 <motion.p 
