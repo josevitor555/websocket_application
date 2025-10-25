@@ -4,7 +4,6 @@ import { LoginForm } from './components/LoginForm';
 import { ChatMessage } from './components/ChatMessage';
 import { UserList } from './components/UserList';
 import { ChatInput } from './components/ChatInput';
-// import { LLMMentionModal } from './components/LLMMentionModal';
 import { ConnectionStatus } from './components/ConnectionStatus';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { SectionList } from './components/SectionList';
@@ -443,6 +442,18 @@ function ChatApp() {
     }
   };
 
+  // Animation variants for background fade-in effect
+  const backgroundVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        duration: 1.5,
+        ease: easeOut
+      }
+    }
+  };
+
   // Mostrar um indicador de carregamento enquanto verifica a autenticação
   if (loading) {
     return <LoadingSpinner />;
@@ -462,9 +473,14 @@ function ChatApp() {
       variants={containerVariants}
     >
       {/* Background pattern dark mode with grid lines and radial gradient */}
-      <div className="absolute inset-0 -z-10 h-full w-full bg-[#0f0f10]">
+      <motion.div 
+        className="absolute inset-0 -z-10 h-full w-full bg-[#0f0f10]"
+        variants={backgroundVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Grid pattern only around the radial gradient area */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_400px_at_100%_0%,rgba(160,160,160,0.25),transparent)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_400px_at_100%_100%,rgba(160,160,160,0.25),transparent)]"></div>
         {/* Visible grid lines only in the radial area */}
         <div 
           className="absolute inset-0 opacity-60" 
@@ -474,11 +490,11 @@ function ChatApp() {
               linear-gradient(to bottom, #a0a0a0 1px, transparent 1px)
             `,
             backgroundSize: '3rem 2rem',
-            mask: 'radial-gradient(circle 200px at 100% 0%, white, transparent)',
-            WebkitMask: 'radial-gradient(circle 320px at 100% 0%, white, transparent)'
+            mask: 'radial-gradient(circle 200px at 100% 100%, white, transparent)',
+            WebkitMask: 'radial-gradient(circle 320px at 100% 100%, white, transparent)'
           }}
         ></div>
-      </div>
+      </motion.div>
       
       <div className="w-full px-4 py-6 h-screen max-h-[100vh] flex flex-col">
         <motion.header

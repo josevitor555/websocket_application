@@ -59,7 +59,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
     >
       <div className="flex flex-col items-start justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <FontAwesomeIcon icon={faUsers} className="w-5 h-5 text-background" />
+          <FontAwesomeIcon icon={faUsers} className="w-5 h-5 text-white" />
           <h2 className="text-lg font-semibold text-[#E0E0E0]">
             Online ({totalOnlineUsers})
           </h2>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { motion, easeOut } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +9,7 @@ export function LoginForm() {
     const { login, loading, error } = useAuth();
     const [username, setUsername] = useState('');
     const [displayName, setDisplayName] = useState('');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -53,7 +53,7 @@ export function LoginForm() {
     };
 
     return (
-        <div className="min-h-screen bg-[#1c1c1f] flex items-center justify-center px-4">
+        <div className="min-h-screen bg-[#0f0f10] flex items-center justify-center px-4">
             <motion.div 
                 className="bg-transparent rounded-2xl p-8 w-full max-w-md border border-[#2A2A2A]"
                 initial="hidden"

@@ -2,7 +2,7 @@ import { motion, easeOut } from 'framer-motion';
 import { llmList } from '../data/llmList';
 import type { LLM } from '../data/llmList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faRobot, faCircle, faLock } from '@fortawesome/free-solid-svg-icons';
 
 interface LLMListProps {
   onLLMSelect?: (llmId: string) => void;
@@ -77,11 +77,18 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                 {companyLLMs.map((llm, index) => (
                   <motion.div
                     key={llm.id}
-                    onClick={() => onLLMSelect?.(llm.id)}
+                    onClick={() => {
+                      // Only allow selection of available models
+                      if (!llm.description.includes('Indisponível')) {
+                        onLLMSelect?.(llm.id);
+                      }
+                    }}
                     className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
                       llm.isSelected
                         ? 'bg-white/10 border border-[#2A2A2A]'
-                        : 'bg-transparent border border-[#2A2A2A] hover:bg-white/5'
+                        : llm.description.includes('Indisponível')
+                          ? 'bg-transparent border border-[#2A2A2A] opacity-60 cursor-not-allowed'
+                          : 'bg-transparent border border-[#2A2A2A] hover:bg-white/5'
                     }`}
                     variants={itemVariants}
                     initial="hidden"
@@ -115,12 +122,21 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                       {llm.isSelected && (
                         <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] absolute bottom-0 right-0" />
                       )}
+                      {llm.description.includes('Indisponível') && (
+                        <FontAwesomeIcon icon={faLock} className="w-3 h-3 text-[#dfddeb] absolute bottom-0 right-0" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[#E0E0E0] font-medium text-base truncate">
                         {llm.name}
                       </p>
-                      <p className={`text-sm truncate ${llm.description.includes('indisponível') ? 'text-red-400' : 'text-[#A0A0A0]'}`}>
+                      <p className={`text-sm truncate ${
+                        llm.description.includes('Indisponível') 
+                          ? 'text-[#dfddeb]' 
+                          : llm.description.includes('indisponível') 
+                            ? 'text-[#dfddeb]' 
+                            : 'text-[#A0A0A0]'
+                      }`}>
                         {llm.description}
                       </p>
                     </div>

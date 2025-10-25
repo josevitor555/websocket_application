@@ -3,16 +3,18 @@ import styled from 'styled-components';
 
 interface UpdatePlanProProps {
   text?: string;
+  subtitle?: string;
   onClick?: () => void;
   children?: React.ReactNode;
 }
 
-const UpdatePlanPro = ({ text = "Explore", onClick, children }: UpdatePlanProProps) => {
+const UpdatePlanPro = ({ text = "Explore", subtitle = "Acesse os melhores Modelos LLM", onClick, children }: UpdatePlanProProps) => {
   return (
     <StyledWrapper>
       <button className="boton-elegante" onClick={onClick}>
         <div className="button-content">
           <span>{text}</span>
+          <span className="subtitle">{subtitle}</span>
           {children}
         </div>
       </button>
@@ -28,7 +30,7 @@ const StyledWrapper = styled.div`
     color: #ffffff;
     font-size: 1.2rem;
     cursor: pointer;
-    border-radius: 30px;
+    border-radius: 12px;
     transition: all 0.4s ease;
     outline: none;
     position: relative;
@@ -42,6 +44,12 @@ const StyledWrapper = styled.div`
     flex-direction: column;
     align-items: start;
     justify-content: center;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+    color: #a0a0a0;
+    margin-top: 5px;
   }
 
   .boton-elegante::after {

@@ -129,7 +129,7 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
                     key={section.id}
                     onClick={() => onSectionSelect?.(section.id)}
                     className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${index === 0 && dateIndex === 0
-                      ? 'bg-white/[0.05] backdrop-blur-3xl border border-gray-50'
+                      ? 'bg-white/[0.05] backdrop-blur-3xl border border-accent-foreground'
                       : 'bg-white/[0.05] backdrop-blur-3xl border'
                       }`}
                     variants={itemVariants}
@@ -161,12 +161,12 @@ export function SectionList({ onSectionSelect, isInModal = false, sections }: Se
 
       {/* Botão de atualização para plano Pro */}
       <div className="p-6">
-        <UpdatePlanPro 
-          text="Atualize para o plano PRO" 
+        <UpdatePlanPro
+          text="Atualize para o plano PRO"
           onClick={handleOpenModal}
         />
       </div>
-      
+
       {/* Modal de Planos */}
       <PlanModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
