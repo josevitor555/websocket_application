@@ -19,6 +19,7 @@ import { faComments, faRightFromBracket } from '@fortawesome/free-solid-svg-icon
 import { motion, easeOut } from 'framer-motion';
 import { io, Socket } from 'socket.io-client';
 
+
 console.log('[App] Serviço LLM carregado:', llmService);
 
 function ChatApp() {

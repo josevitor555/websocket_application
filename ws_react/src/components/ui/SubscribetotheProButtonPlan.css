@@ -1,0 +1,45 @@
+/* Botão principal */
+.group {
+  position: relative;
+  border-radius: 9999px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #1f1f1f; /* background sólido */
+  color: white;
+  font-weight: 500;
+}
+
+/* Anel circular animado com gradiente contínuo */
+.group::before {
+  content: '';
+  position: absolute;
+  inset: -4px; /* para o anel ficar fora do botão */
+  border-radius: 9999px;
+  padding: 4px; /* define a espessura do anel */
+  background: conic-gradient(
+    from 0deg,
+    #F26378,
+    #7A69F9,
+    #F5833F,
+    #3BC4F2,
+    #F26378
+  );
+  -webkit-mask: 
+    radial-gradient(farthest-side, #000 95%, transparent 100%) content-box;
+  mask: 
+    radial-gradient(farthest-side, #000 95%, transparent 100%) content-box;
+  z-index: 0;
+  animation: spin 2s linear infinite;
+}
+
+/* Conteúdo do botão acima do anel */
+.group > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Rotação do anel */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

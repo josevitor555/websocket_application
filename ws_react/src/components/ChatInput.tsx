@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { LLMMentionModal } from './LLMMentionModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faPaperclip, faMicrophone } from '@fortawesome/free-solid-svg-icons';
 
 interface ChatInputProps {
     onSendMessage: (message: string) => void;
@@ -70,6 +70,12 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
     return (
         <>
             <form onSubmit={handleSubmit} className="flex gap-3">
+                <button
+                    type="button"
+                    className="bg-background text-[#fafafa] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
+                >
+                    <FontAwesomeIcon icon={faPaperclip} className="w-5 h-5" />
+                </button>
                 <input
                     ref={inputRef}
                     type="text"
@@ -80,9 +86,15 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
                     className="flex-1 px-4 py-3 bg-transparent border border-[#2A2A2A] rounded-xl text-[#E0E0E0] placeholder-[#A0A0A0]"
                 />
                 <button
+                    type="button"
+                    className="bg-background text-[#fafafa] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
+                >
+                    <FontAwesomeIcon icon={faMicrophone} className="w-5 h-5" />
+                </button>
+                <button
                     type="submit"
                     disabled={!message.trim() || disabled}
-                    className="bg-background text-[#121212] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
+                    className="bg-background text-[#fafafa] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
                 >
                     <FontAwesomeIcon icon={faPaperPlane} className="w-5 h-5" />
                 </button>
