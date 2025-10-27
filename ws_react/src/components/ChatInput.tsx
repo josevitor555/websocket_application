@@ -72,7 +72,7 @@ export function ChatInput({ onSendMessage, onTyping, disabled }: ChatInputProps)
             <form onSubmit={handleSubmit} className="flex gap-3">
                 <button
                     type="button"
-                    className="bg-background text-[#fafafa] p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
+                    className="bg-[#fafafa] text-[#2A2A2A] cursor-pointer p-3 rounded-xl transition-colors duration-200 disabled:opacity-50"
                 >
                     <FontAwesomeIcon icon={faPaperclip} className="w-5 h-5" />
                 </button>

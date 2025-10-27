@@ -10,52 +10,20 @@ interface PlanModalProps {
 const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  // Animation variants for fade-in effect
+  // Animation variants for fade-in effect only on the modal itself
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 }
   };
 
   const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring" as const,
-        damping: 25,
-        stiffness: 500
-      }
-    }
-  };
-
-  const contentVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: 0.1,
-        duration: 0.3
-      }
-    }
-  };
-
-  const planVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (index: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: 0.2 + index * 0.1,
-        duration: 0.3
-      }
-    })
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 }
   };
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black bg-opacity-20 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+      className="fixed inset-0 bg-gray-160/20 backdrop-blur-sm flex justify-center items-center z-50 p-4"
       onClick={onClose}
       variants={backdropVariants}
       initial="hidden"
@@ -70,102 +38,54 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
         animate="visible"
         exit="hidden"
       >
-        <motion.button
+        <button
           className="absolute top-5 right-5 bg-[#121212] border-none text-[#E0E0E0] text-3xl w-10 h-10 flex items-center justify-center rounded-full transition-colors hover:bg-[#EF4444] hover:text-white"
           onClick={onClose}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
         >
           &times;
-        </motion.button>
+        </button>
 
-        <motion.div
-          className="text-center py-10 px-5"
-          variants={contentVariants}
-        >
-          <motion.h2
-            className="text-3xl text-[#E0E0E0] mb-2 font-bold"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
+        <div className="text-center py-10 px-5">
+          <h2 className="text-3xl text-[#E0E0E0] mb-2 font-bold">
             Escolha seu Plano
-          </motion.h2>
-          <motion.p
-            className="text-[#A0A0A0]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
+          </h2>
+          <p className="text-[#A0A0A0]">
             Desbloqueie todos os recursos e potencialize sua experiência
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
-        <motion.div
-          className="flex gap-8 px-10 pb-10 md:flex-row flex-col"
-          variants={contentVariants}
-        >
+        <div className="flex gap-8 px-10 pb-10 md:flex-row flex-col">
           {/* Plano Free */}
-          <motion.div
-            className="flex-1 bg-transparent rounded-xl p-6 border border-[#2A2A2A]"
-            variants={planVariants}
-            custom={0}
-          >
-            <motion.div
-              className="text-start pb-5 mb-5 border-b border-[#2A2A2A]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
+          <div className="flex-1 bg-transparent rounded-xl p-6 border border-[#2A2A2A]">
+            <div className="text-start pb-5 mb-5 border-b border-[#2A2A2A]">
               <h3 className="text-2xl text-[#E0E0E0] mb-1 font-semibold">Free</h3>
               <p className="text-[#A0A0A0] font-bold">Com rate limiter</p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="mb-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
+            <div className="mb-6">
               <h4 className="text-[#E0E0E0] text-lg mb-3 font-semibold">Modelos Disponíveis</h4>
 
               <div className="mb-4">
                 <h5 className="text-[#A0A0A0] font-semibold mb-2">Google</h5>
                 <div className="flex flex-wrap gap-2">
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemma-3-1b-it
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemini-1.5-flash
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemini-2.5-flash
-                  </motion.button>
+                  </button>
                 </div>
               </div>
 
               <div className="mb-4">
                 <h5 className="text-[#A0A0A0] font-semibold mb-2">Open AI</h5>
                 <div className="flex flex-wrap gap-2">
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     GPT-5
-                  </motion.button>
+                  </button>
                 </div>
               </div>
 
@@ -178,25 +98,16 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
                 <span className="text-[#A0A0A0]">Modo Criativo</span>
                 <span className="text-xs px-2.5 py-1 rounded-full bg-[#121212] text-[#E0E0E0] font-semibold">Limitado</span>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="bg-[#121212] rounded-lg p-4 mb-6 border border-[#2A2A2A]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
+            <div className="bg-[#121212] rounded-lg p-4 mb-6 border border-[#2A2A2A]">
               <p className="text-[#A0A0A0] text-center">
                 <span className="font-bold text-[#E0E0E0]">Créditos iniciais:</span> 100 request/Mes<br />
                 <span className="text-sm">(Nos dois primeiros meses)</span>
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
+            <div>
               <h4 className="text-[#E0E0E0] text-lg mb-2 font-semibold">Modo Arena</h4>
               <p className="text-[#A0A0A0] text-sm mb-4 leading-relaxed">
                 Os usuários podem selecionar os melhores modelos para debater sobre um tema específico.
@@ -209,192 +120,98 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
                 Os usuários podem convidar amigos para interagir juntos. Geração multimodal de conteúdo colaborativa.
                 Recursos limitados devido ao status Free.
               </p>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Plano PRO */}
-          <motion.div
-            className="flex-1 bg-transparent rounded-xl p-6 border-2 border-[#2A2A2A] relative shadow-md"
-            variants={planVariants}
-            custom={1}
-          >
+          <div className="flex-1 bg-transparent rounded-xl p-6 border-2 border-[#2A2A2A] relative shadow-md">
             <div className="absolute -top-3 right-5 bg-[#121212] text-[#E0E0E0] text-xs font-bold px-4 py-1 rounded-full border border-[#2A2A2A]">
               Recomendado
             </div>
 
-            <motion.div
-              className="text-start pb-5 mb-5 border-b border-[#2A2A2A]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
+            <div className="text-start pb-5 mb-5 border-b border-[#2A2A2A]">
               <h3 className="text-2xl text-[#E0E0E0] mb-1 font-semibold">PRO</h3>
-              <p className="text-[#A0A0A0] font-bold text-lg">R$ 29,90/mês</p>
-            </motion.div>
+              <p className="text-[#A0A0A0] font-bold text-lg">R$ 49,90/mês</p>
+            </div>
 
-            <motion.div
-              className="mb-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
+            <div className="mb-6">
               <h4 className="text-[#E0E0E0] text-lg mb-3 font-semibold">Modelos Disponíveis</h4>
 
               <div className="mb-4">
                 <h5 className="text-[#A0A0A0] font-semibold mb-2">Google</h5>
                 <div className="flex flex-wrap gap-2">
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemini-1.5-flash
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemini-2.5-flash
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemini-2.5-flash Image (Nano Banana)
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemini-2.5-pro
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemma-3-1b-it
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Google Veo 3.1
-                  </motion.button>
+                  </button>
                 </div>
               </div>
 
               <div className="mb-4">
                 <h5 className="text-[#A0A0A0] font-semibold mb-2">Open AI</h5>
                 <div className="flex flex-wrap gap-2">
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     GPT-4.1
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     GPT 4o
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     GPT-5
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     GPT o4 mini
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     GPT 5 Nano
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     GPT 5 Pro
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Sora 2 & Sora 2 Pro
-                  </motion.button>
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
+                    Sora 2
+                  </button>
                 </div>
               </div>
 
               <div className="mb-4">
                 <h5 className="text-[#A0A0A0] font-semibold mb-2">XAI</h5>
                 <div className="flex flex-wrap gap-2">
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok 4 Fast Reasoning
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok 4 Fast Non Reasoning
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok Code Fast 1
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok-4
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok-3
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok 3 Mini
-                  </motion.button>
-                  <motion.button
-                    className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok 2 Image 1212
-                  </motion.button>
+                  </button>
                 </div>
               </div>
 
@@ -407,29 +224,20 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
                 <span className="text-[#A0A0A0]">Modo Criativo</span>
                 <span className="text-xs px-2.5 py-1 rounded-full bg-[#121212] text-[#E0E0E0] font-semibold">Ilimitado</span>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="bg-[#121212] rounded-lg p-4 mb-6 border border-[#2A2A2A]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
+            <div className="bg-[#121212] rounded-lg p-4 mb-6 border border-[#2A2A2A]">
               <p className="text-[#A0A0A0] text-center">
                 <span className="font-bold text-[#E0E0E0]">Créditos iniciais:</span> 2.000 request/mês<br />
-                <span className="text-sm">(com renovação semanal)</span>
+                <span className="text-sm">(com renovação semanal de 500 créditos)</span>
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
+            <div>
               <SubscribeToTheProButtonPlan />
-            </motion.div>
-          </motion.div>
-        </motion.div>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );

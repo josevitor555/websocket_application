@@ -7,12 +7,6 @@ interface ConnectionStatusProps {
 }
 
 export function ConnectionStatus({ isConnected, reconnectAttempt, onReconnect }: ConnectionStatusProps) {
-  const handleClearLLMErrors = () => {
-    llmMessageService.clearLLMErrorMessagesFromLocalStorage();
-    // Forçar um reload da página para atualizar a UI
-    window.location.reload();
-  };
-
   return (
     <div className="flex items-center gap-2">
       <div className="flex items-center">
@@ -36,15 +30,6 @@ export function ConnectionStatus({ isConnected, reconnectAttempt, onReconnect }:
           Reconectar
         </button>
       )}
-      
-      {/* Botão para limpar mensagens de erro LLM */}
-      <button
-        onClick={handleClearLLMErrors}
-        className="px-2 py-1 bg-[#121212] hover:bg-[#2A2A2A] text-[#E0E0E0] text-xs rounded transition-colors border border-[#2A2A2A]"
-        title="Limpar mensagens de erro LLM"
-      >
-        Limpar Erros LLM
-      </button>
     </div>
   );
 }
