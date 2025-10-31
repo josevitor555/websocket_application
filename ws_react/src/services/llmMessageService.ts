@@ -87,16 +87,16 @@ export const llmMessageService = {
   /**
    * Limpa mensagens LLM do localStorage
    */
-  clearLLMMessagesFromLocalStorage(): void {
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem(LLM_MESSAGES_STORAGE_KEY);
-        console.log('[LLM Message Service] Mensagens LLM removidas do localStorage');
-      }
-    } catch (error) {
-      console.error('[LLM Message Service] Erro ao limpar mensagens LLM do localStorage:', error);
-    }
-  },
+  // clearLLMMessagesFromLocalStorage(): void {
+  //   try {
+  //     if (typeof localStorage !== 'undefined') {
+  //       localStorage.removeItem(LLM_MESSAGES_STORAGE_KEY);
+  //       console.log('[LLM Message Service] Mensagens LLM removidas do localStorage');
+  //     }
+  //   } catch (error) {
+  //     console.error('[LLM Message Service] Erro ao limpar mensagens LLM do localStorage:', error);
+  //   }
+  // },
   
   /**
    * Limpa apenas as mensagens de erro LLM do localStorage
@@ -209,7 +209,7 @@ export const llmMessageService = {
     
     return {
       id: `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      user_id: 'llm',
+      user_id: 'llm', // Sempre usar 'llm' como user_id para mensagens LLM
       message: response,
       created_at: timestamp,
       isLLM: true,
@@ -230,7 +230,7 @@ export const llmMessageService = {
     
     return {
       id: `llm-error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      user_id: 'llm',
+      user_id: 'llm', // Sempre usar 'llm' como user_id para mensagens LLM
       message: `Erro ao obter resposta do ${modelName}: ${error}`,
       created_at: timestamp,
       isLLM: true,

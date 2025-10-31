@@ -34,8 +34,8 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       x: -20
     },
     visible: {
@@ -49,7 +49,7 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
   };
 
   return (
-    <div 
+    <div
       className={`${isInModal ? '' : 'bg-transparent rounded-2xl border border-[#2A2A2A]'} h-full max-h-[100vh] flex flex-col overflow-hidden`}
     >
       {!isInModal && (
@@ -64,7 +64,7 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
       <div className={`${isInModal ? 'p-4' : 'p-6 pt-6'} flex-1 overflow-y-auto overflow-x-hidden`}>
         <div className="space-y-6 min-w-full">
           {Object.entries(groupedLLMs).map(([company, companyLLMs]) => (
-            <motion.div 
+            <motion.div
               key={company}
               variants={containerVariants}
               initial="hidden"
@@ -83,17 +83,16 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                         onLLMSelect?.(llm.id);
                       }
                     }}
-                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
-                      llm.isSelected
+                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${llm.isSelected
                         ? 'bg-white/10 border border-[#2A2A2A]'
                         : llm.description.includes('Indisponível')
                           ? 'bg-transparent border border-[#2A2A2A] opacity-60 cursor-not-allowed'
                           : 'bg-transparent border border-[#2A2A2A] hover:bg-white/5'
-                    }`}
+                      }`}
                     variants={itemVariants}
                     initial="hidden"
                     animate="visible"
-                    transition={{ 
+                    transition={{
                       delay: index * 0.05,
                       duration: 0.5,
                       ease: easeOut
@@ -130,13 +129,12 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                       <p className="text-[#E0E0E0] font-medium text-base truncate">
                         {llm.name}
                       </p>
-                      <p className={`text-sm truncate ${
-                        llm.description.includes('Indisponível') 
-                          ? 'text-[#dfddeb]' 
-                          : llm.description.includes('indisponível') 
-                            ? 'text-[#dfddeb]' 
+                      <p className={`text-sm truncate ${llm.description.includes('Indisponível')
+                          ? 'text-[#dfddeb]'
+                          : llm.description.includes('indisponível')
+                            ? 'text-[#dfddeb]'
                             : 'text-[#A0A0A0]'
-                      }`}>
+                        }`}>
                         {llm.description}
                       </p>
                     </div>

@@ -52,7 +52,7 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
 
   return (
     <motion.div
-      className="bg-transparent rounded-2xl p-6 border border-[#2A2A2A] h-full"
+      className="bg-transparent rounded-2xl p-6 border border-[#2A2A2A] h-full relative"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -150,6 +150,17 @@ export function UserList({ users, currentUserId, typingUser }: UserListProps) {
             ))}
           </>
         )}
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-6 mr-4 ml-4">
+        <button className="bg-white text-black cursor-pointer rounded-lg px-6 py-3 font-semibold hover:bg-gray-200 transition-colors w-full text-left">
+          <div className="flex flex-col">
+            <span>100 créditos FREE</span>
+            <span className="text-xs text-black/60 mt-1">
+              Aproveite 100 request para cada modelo.
+            </span>
+          </div>
+        </button>
       </div>
     </motion.div>
   );

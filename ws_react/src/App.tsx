@@ -78,46 +78,72 @@ function ChatApp() {
           const messagesData = await messageService.getHistory(100);
           let allMessages: ChatMessageType[] = [];
           let validMessages: ChatMessageType[] = [];
-          
+
           if (messagesData) {
             // Filtrar mensagens para garantir que todas tenham ID válido
             validMessages = messagesData.filter(msg => msg && msg.id);
             allMessages = [...validMessages];
           }
-          
+
           // Carregar mensagens LLM do localStorage primeiro (para exibição imediata)
           const localLLMMessages = llmMessageService.loadLLMMessagesFromLocalStorage();
           console.log('[App] Mensagens LLM carregadas do localStorage:', localLLMMessages?.length || 0);
-          
+
           // Combinar mensagens do chat com mensagens LLM do localStorage
           allMessages = [...allMessages, ...localLLMMessages];
-          
+
           // Carregar histórico de mensagens LLM do banco de dados (para atualizar com dados reais)
           try {
             const dbLLMMessages = await llmMessageService.getUserLLMMessages(currentUser.id, 50);
             console.log('[App] Mensagens LLM carregadas do banco de dados:', dbLLMMessages?.length || 0);
-            
+
             // Filtrar mensagens LLM do localStorage que já foram persistidas no banco
             const persistedLLMMessageIds = new Set(dbLLMMessages.map(msg => msg.llm_interaction_id));
-            const nonPersistedLocalMessages = localLLMMessages.filter(msg => 
+            const nonPersistedLocalMessages = localLLMMessages.filter(msg =>
               !msg.llm_interaction_id || !persistedLLMMessageIds.has(msg.llm_interaction_id)
             );
-            
+
             // Combinar mensagens do chat com mensagens LLM do banco e mensagens locais não persistidas
             allMessages = [...validMessages, ...dbLLMMessages, ...nonPersistedLocalMessages];
-            
+
+            // Remover mensagens LLM duplicadas com base no conteúdo e timestamp
+            const uniqueMessages = allMessages.filter((msg, index, self) => {
+              // Se não for uma mensagem LLM, manter
+              if (!(msg.isLLM || msg.user_id === 'llm' || (msg as any).id?.startsWith('llm-'))) {
+                return true;
+              }
+              
+              // Verificar se há outra mensagem LLM com o mesmo conteúdo e timestamp próximo
+              const isDuplicate = self.some((otherMsg, otherIndex) => {
+                if (otherIndex >= index) return false; // Não comparar com mensagens futuras ou ela mesma
+                
+                if (!(otherMsg.isLLM || otherMsg.user_id === 'llm' || (otherMsg as any).id?.startsWith('llm-'))) {
+                  return false;
+                }
+                
+                // Verificar se o conteúdo é o mesmo e o timestamp é próximo (5 segundos)
+                return msg.message === otherMsg.message &&
+                  Math.abs(new Date(msg.created_at).getTime() - new Date(otherMsg.created_at).getTime()) < 5000;
+              });
+              
+              return !isDuplicate;
+            });
+
             // Atualizar o localStorage com as mensagens mais recentes do banco
             llmMessageService.saveLLMMessagesToLocalStorage([...dbLLMMessages, ...nonPersistedLocalMessages]);
+            
+            // Usar as mensagens únicas
+            allMessages = uniqueMessages;
           } catch (llmError) {
             console.error('[App] Erro ao carregar mensagens LLM do banco de dados:', llmError);
             // Usar apenas as mensagens do localStorage e do chat em caso de erro
           }
-          
+
           // Ordenar todas as mensagens por data de criação (crescente)
-          allMessages.sort((a, b) => 
+          allMessages.sort((a, b) =>
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
           );
-          
+
           setMessages(allMessages);
           hasLoadedInitialMessages.current = true;
         } catch (error) {
@@ -142,6 +168,20 @@ function ChatApp() {
           const messageExists = prev.some(msg => msg.id === message.id);
           if (messageExists) {
             return prev;
+          }
+          
+          // Verificar se é uma mensagem LLM e se já temos uma mensagem local com o mesmo conteúdo
+          // Isso evita duplicatas quando a mensagem LLM é recebida do servidor após ser adicionada localmente
+          if (message.isLLM || message.user_id === 'llm' || (message as any).id?.startsWith('llm-')) {
+            const llmMessageExists = prev.some(msg => 
+              (msg.isLLM || msg.user_id === 'llm' || (msg as any).id?.startsWith('llm-')) &&
+              msg.message === message.message &&
+              Math.abs(new Date(msg.created_at).getTime() - new Date(message.created_at).getTime()) < 5000 // 5 segundos
+            );
+            
+            if (llmMessageExists) {
+              return prev;
+            }
           }
           
           // Adicionar nova mensagem e ordenar por data de criação (crescente)
@@ -338,6 +378,17 @@ function ChatApp() {
               
               // Adicionar a mensagem da LLM ao estado de mensagens com ordenação correta
               setMessages((prev) => {
+                // Verificar se já existe uma mensagem LLM com o mesmo conteúdo para evitar duplicatas
+                const llmMessageExists = prev.some(msg => 
+                  (msg.isLLM || msg.user_id === 'llm' || (msg as any).id?.startsWith('llm-')) &&
+                  msg.message === llmMessage.message &&
+                  Math.abs(new Date(msg.created_at).getTime() - new Date(llmMessage.created_at).getTime()) < 5000 // 5 segundos
+                );
+                
+                if (llmMessageExists) {
+                  return prev;
+                }
+                
                 const newMessages = [...prev, llmMessage];
                 return newMessages.sort((a, b) => 
                   new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
@@ -346,6 +397,18 @@ function ChatApp() {
               
               // Salvar no localStorage para persistência temporária
               llmMessageService.addLLMMessageToLocalStorage(llmMessage);
+              
+              // ENVIAR A MENSAGEM LLM PARA O SERVIDOR PARA QUE OUTROS USUÁRIOS POSSAM VÊ-LA
+              // Adicionar um pequeno atraso para garantir a ordem correta
+              setTimeout(() => {
+                if (socketRef.current) {
+                  socketRef.current.emit('send_message', {
+                    message: response.response,
+                    isLLM: true,
+                    provider: llm.name
+                  });
+                }
+              }, 100);
               
               // Logar no console também
               console.log(`[LLM Test] Resposta do ${llm.name}:`, response.response);
@@ -360,6 +423,17 @@ function ChatApp() {
               
               // Adicionar a mensagem de erro ao estado de mensagens com ordenação correta
               setMessages((prev) => {
+                // Verificar se já existe uma mensagem LLM com o mesmo conteúdo para evitar duplicatas
+                const llmMessageExists = prev.some(msg => 
+                  (msg.isLLM || msg.user_id === 'llm' || (msg as any).id?.startsWith('llm-')) &&
+                  msg.message === errorMessage.message &&
+                  Math.abs(new Date(msg.created_at).getTime() - new Date(errorMessage.created_at).getTime()) < 5000 // 5 segundos
+                );
+                
+                if (llmMessageExists) {
+                  return prev;
+                }
+                
                 const newMessages = [...prev, errorMessage];
                 return newMessages.sort((a, b) => 
                   new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
@@ -368,6 +442,19 @@ function ChatApp() {
               
               // Salvar no localStorage para persistência temporária
               llmMessageService.addLLMMessageToLocalStorage(errorMessage);
+              
+              // ENVIAR A MENSAGEM DE ERRO LLM PARA O SERVIDOR PARA QUE OUTROS USUÁRIOS POSSAM VÊ-LA
+              // Adicionar um pequeno atraso para garantir a ordem correta
+              setTimeout(() => {
+                if (socketRef.current) {
+                  socketRef.current.emit('send_message', {
+                    message: `Erro ao obter resposta do ${llm.name}: ${response.error || 'Erro desconhecido'}`,
+                    isLLM: true,
+                    provider: llm.name,
+                    isError: true
+                  });
+                }
+              }, 100);
               
               // Logar erro no console
               console.log(`[LLM Test] Erro ao obter resposta do ${llm.name}:`, response.error || 'Erro desconhecido');
@@ -384,6 +471,17 @@ function ChatApp() {
             
             // Adicionar a mensagem de erro ao estado de mensagens com ordenação correta
             setMessages((prev) => {
+              // Verificar se já existe uma mensagem LLM com o mesmo conteúdo para evitar duplicatas
+              const llmMessageExists = prev.some(msg => 
+                (msg.isLLM || msg.user_id === 'llm' || (msg as any).id?.startsWith('llm-')) &&
+                msg.message === errorMessage.message &&
+                Math.abs(new Date(msg.created_at).getTime() - new Date(errorMessage.created_at).getTime()) < 5000 // 5 segundos
+              );
+              
+              if (llmMessageExists) {
+                return prev;
+              }
+              
               const newMessages = [...prev, errorMessage];
               return newMessages.sort((a, b) => 
                 new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
@@ -392,6 +490,19 @@ function ChatApp() {
             
             // Salvar no localStorage para persistência temporária
             llmMessageService.addLLMMessageToLocalStorage(errorMessage);
+            
+            // ENVIAR A MENSAGEM DE ERRO LLM PARA O SERVIDOR PARA QUE OUTROS USUÁRIOS POSSAM VÊ-LA
+            // Adicionar um pequeno atraso para garantir a ordem correta
+            setTimeout(() => {
+              if (socketRef.current) {
+                socketRef.current.emit('send_message', {
+                  message: `Erro ao obter resposta do ${llm.name}: ${(error as Error).message}`,
+                  isLLM: true,
+                  provider: llm.name,
+                  isError: true
+                });
+              }
+            }, 100);
           }
         } else {
           console.log('[App] Nenhum modelo correspondente encontrado para:', modelName);
@@ -446,7 +557,7 @@ function ChatApp() {
   // Animation variants for background fade-in effect
   const backgroundVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: {
         duration: 1.5,
@@ -474,7 +585,7 @@ function ChatApp() {
       variants={containerVariants}
     >
       {/* Background pattern dark mode with grid lines and radial gradient */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 -z-10 h-full w-full bg-[#0f0f10]"
         variants={backgroundVariants}
         initial="hidden"
@@ -483,9 +594,9 @@ function ChatApp() {
         {/* Grid pattern only around the radial gradient area */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_400px_at_100%_100%,rgba(160,160,160,0.25),transparent)]"></div>
         {/* Visible grid lines only in the radial area */}
-        <div 
-          className="absolute inset-0 opacity-60" 
-          style={{ 
+        <div
+          className="absolute inset-0 opacity-60"
+          style={{
             backgroundImage: `
               linear-gradient(to right, #a0a0a0 1px, transparent 1px),
               linear-gradient(to bottom, #a0a0a0 1px, transparent 1px)
@@ -496,7 +607,7 @@ function ChatApp() {
           }}
         ></div>
       </motion.div>
-      
+
       <div className="w-full px-4 py-6 h-screen max-h-[100vh] flex flex-col">
         <motion.header
           className="bg-white/[0.05] backdrop-blur-3xl rounded-2xl p-4 mb-6 border border-white/[0.3] flex-shrink-0"
@@ -522,7 +633,7 @@ function ChatApp() {
               />
               <button
                 onClick={logout}
-                className="flex items-center gap-2 px-4 py-2 bg-[#121212] hover:bg-[#EF4444] text-[#E0E0E0] cursor-pointer rounded-lg transition-colors border border-[#2A2A2A] hover:border-[#EF4444]"
+                className="flex items-center gap-2 px-4 py-2 bg-[#121212] hover:bg-[#ffffff] text-[#E0E0E0] hover:text-black cursor-pointer rounded-lg transition-colors border border-[#2A2A2A] hover:border-[#ffffff]"
               >
                 <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
                 <span className="hidden sm:inline">Sair</span>
@@ -541,7 +652,7 @@ function ChatApp() {
           >
             <SectionList
               sections={[
-                // Seções de hoje
+                // Seções de hoje (mais chats)
                 {
                   id: 'today-1',
                   title: 'Discussão técnica',
@@ -554,50 +665,25 @@ function ChatApp() {
                   icon: 'fa-users',
                   date: new Date()
                 },
-                // Seções de ontem
+                {
+                  id: 'today-3',
+                  title: 'Revisão de código',
+                  icon: 'fa-code',
+                  date: new Date()
+                },
+                // Seções de ontem (menos chats)
                 {
                   id: 'yesterday-1',
                   title: 'Planejamento semanal',
                   icon: 'fa-calendar-alt',
                   date: new Date(Date.now() - 24 * 60 * 60 * 1000)
                 },
-                {
-                  id: 'yesterday-2',
-                  title: 'Revisão de código',
-                  icon: 'fa-code',
-                  date: new Date(Date.now() - 24 * 60 * 60 * 1000)
-                },
-                // Seções da semana passada
+                // Seções da semana passada (ainda menos chats)
                 {
                   id: 'last-week-1',
                   title: 'Feedback do cliente',
                   icon: 'fa-comment',
                   date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-                },
-                {
-                  id: 'last-week-2',
-                  title: 'Análise de métricas',
-                  icon: 'fa-chart-bar',
-                  date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
-                },
-                // Seções temáticas
-                {
-                  id: 'theme-1',
-                  title: 'IAArena',
-                  icon: 'fa-robot',
-                  date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-                },
-                {
-                  id: 'theme-2',
-                  title: 'Projeto WebSocket',
-                  icon: 'fa-network-wired',
-                  date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
-                },
-                {
-                  id: 'theme-3',
-                  title: 'Desenvolvimento Frontend',
-                  icon: 'fa-paint-brush',
-                  date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
                 }
               ]}
             />
@@ -609,11 +695,12 @@ function ChatApp() {
           >
             <div className="flex-1 overflow-y-auto p-6 space-y-1">
               {messages.map((message) => (
-                <ChatMessage
-                  key={message.id || `temp-${message.created_at}-${message.message.substring(0, 10)}`}
-                  message={message}
-                  isOwnMessage={message.user_id === currentUser.id}
-                />
+                <div key={message.id || `temp-${message.created_at}-${message.message.substring(0, 10)}`} className="clear-both">
+                  <ChatMessage
+                    message={message}
+                    isOwnMessage={message.user_id === currentUser.id}
+                  />
+                </div>
               ))}
 
               <div ref={messagesEndRef} />

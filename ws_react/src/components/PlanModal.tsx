@@ -103,7 +103,14 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
             <div className="bg-[#121212] rounded-lg p-4 mb-6 border border-[#2A2A2A]">
               <p className="text-[#A0A0A0] text-center">
                 <span className="font-bold text-[#E0E0E0]">Créditos iniciais:</span> 100 request/Mes<br />
-                <span className="text-sm">(Nos dois primeiros meses)</span>
+                <span className="text-sm">(Somente no primeiro mês)</span>
+              </p>
+            </div>
+
+            <div className="bg-[#121212] rounded-lg p-4 mb-6 border border-[#2A2A2A]">
+              <p className="text-[#A0A0A0] text-center">
+                <span className="font-bold text-[#E0E0E0]">Limite de usuários por chat:</span> 2 usuários<br />
+                <span className="text-sm">(interagindo com as LLMs)</span>
               </p>
             </div>
 
@@ -131,7 +138,7 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
 
             <div className="text-start pb-5 mb-5 border-b border-[#2A2A2A]">
               <h3 className="text-2xl text-[#E0E0E0] mb-1 font-semibold">PRO</h3>
-              <p className="text-[#A0A0A0] font-bold text-lg">R$ 49,90/mês</p>
+              <p className="text-[#A0A0A0] font-bold text-lg">R$ 69,90/mês</p>
             </div>
 
             <div className="mb-6">
@@ -230,6 +237,13 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
               <p className="text-[#A0A0A0] text-center">
                 <span className="font-bold text-[#E0E0E0]">Créditos iniciais:</span> 2.000 request/mês<br />
                 <span className="text-sm">(com renovação semanal de 500 créditos)</span>
+              </p>
+            </div>
+
+            <div className="bg-[#121212] rounded-lg p-4 mb-6 border border-[#2A2A2A]">
+              <p className="text-[#A0A0A0] text-center">
+                <span className="font-bold text-[#E0E0E0]">Limite de usuários por chat:</span> 4 - 6 Usuários por Chat<br />
+                <span className="text-sm">(interagindo com as LLMs)</span>
               </p>
             </div>
 

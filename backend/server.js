@@ -117,36 +117,76 @@ io.on('connection', (socket) => {
       if (user) {
         console.log('[Server] Creating message for user:', user.userId, 'with data:', messageData);
         
-        // Salvar mensagem no banco de dados
-        const { Message } = await import('./model/index.js');
-        const message = await Message.create({
-          user_id: user.userId,
-          message: messageData.message,
-        });
+        // Verificar se é uma mensagem LLM
+        if (messageData.isLLM) {
+          // Tratar mensagem LLM - criar uma interação LLM no banco de dados
+          const { LLMInteraction } = await import('./model/index.js');
+          
+          // Criar uma interação LLM simulada
+          const interactionData = {
+            user_id: user.userId,
+            provider_id: null, // Não temos o ID do provedor real
+            prompt: '', // Não temos o prompt original
+            response: messageData.message,
+            model: messageData.provider || 'LLM',
+            tokens_used: 0
+          };
+          
+          const interaction = await LLMInteraction.create(interactionData);
+          console.log('[Server] LLM interaction created:', interaction);
+          
+          // Criar uma mensagem formatada para enviar aos clientes
+          // Adicionar um pequeno atraso para garantir a ordem correta
+          const timestamp = new Date(Date.now() + 100).toISOString();
+          const formattedMessage = {
+            id: `llm-${interaction.id}`,
+            user_id: 'llm',
+            message: messageData.message,
+            created_at: timestamp, // Usar um timestamp ligeiramente posterior
+            isLLM: true,
+            provider: messageData.provider
+          };
+          
+          // Atualizar última atividade da sessão
+          await Session.update(user.sessionToken, {
+            last_activity: new Date().toISOString()
+          });
+          
+          // Enviar mensagem LLM para todos os clientes conectados
+          io.emit('new_message', formattedMessage);
+        } else {
+          // Tratar mensagem normal do usuário
+          // Salvar mensagem no banco de dados
+          const { Message } = await import('./model/index.js');
+          const message = await Message.create({
+            user_id: user.userId,
+            message: messageData.message,
+          });
 
-        // Verificar se a mensagem foi criada corretamente
-        if (!message) {
-          console.error('[Server] Failed to create message - no data returned');
-          socket.emit('message_error', { message: 'Failed to create message - no data returned' });
-          return;
+          // Verificar se a mensagem foi criada corretamente
+          if (!message) {
+            console.error('[Server] Failed to create message - no data returned');
+            socket.emit('message_error', { message: 'Failed to create message - no data returned' });
+            return;
+          }
+
+          // Verificar se a mensagem tem ID e created_at
+          if (!message.id || !message.created_at) {
+            console.error('[Server] Created message is missing required fields:', message);
+            socket.emit('message_error', { message: 'Failed to create message - missing required fields' });
+            return;
+          }
+
+          console.log('[Server] Message created successfully:', message);
+
+          // Atualizar última atividade da sessão
+          await Session.update(user.sessionToken, {
+            last_activity: new Date().toISOString()
+          });
+
+          // Enviar mensagem para todos os clientes conectados
+          io.emit('new_message', message);
         }
-
-        // Verificar se a mensagem tem ID e created_at
-        if (!message.id || !message.created_at) {
-          console.error('[Server] Created message is missing required fields:', message);
-          socket.emit('message_error', { message: 'Failed to create message - missing required fields' });
-          return;
-        }
-
-        console.log('[Server] Message created successfully:', message);
-
-        // Atualizar última atividade da sessão
-        await Session.update(user.sessionToken, {
-          last_activity: new Date().toISOString()
-        });
-
-        // Enviar mensagem para todos os clientes conectados
-        io.emit('new_message', message);
       }
     } catch (error) {
       console.error('[Server] Error processing message:', error);

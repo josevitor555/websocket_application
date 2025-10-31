@@ -1,7 +1,7 @@
 import type { ChatMessage as ChatMessageType } from '../../types/chat';
 
 interface ChatMessageProps {
-    message: ChatMessageType & { isLLM?: boolean; provider?: string };
+    message: ChatMessageType;
     isOwnMessage: boolean;
 }
 
@@ -15,7 +15,9 @@ export function ChatMessage({ message, isOwnMessage }: ChatMessageProps) {
     const isLLMMessage = message.isLLM || message.user_id === 'llm' || (message as any).id?.startsWith('llm-');
 
     // Determinar o alinhamento com base no tipo de mensagem
-    const isUserMessage = isOwnMessage && !isLLMMessage;
+    // Para mensagens LLM, sempre alinhar à esquerda, independentemente do usuário
+    // Para mensagens de usuários, alinhar à direita se for do próprio usuário, à esquerda se for de outros
+    const isUserMessage = isLLMMessage ? false : isOwnMessage;
 
     // Função para formatar o texto da mensagem com quebras de parágrafo
     const formatMessageText = (text: string) => {
@@ -106,8 +108,8 @@ export function ChatMessage({ message, isOwnMessage }: ChatMessageProps) {
     };
 
     return (
-        <div className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'} mb-4`}>
-            <div className={`max-w-[70%] ${isUserMessage ? 'items-end' : 'items-start'} flex flex-col`}>
+        <div className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'} mb-4 w-full`}>
+            <div className={`max-w-[50%] ${isUserMessage ? 'items-end' : 'items-start'} flex flex-col w-full`}>
                 {!isUserMessage && (
                     <span className="text-xs text-[#A0A0A0] mb-1.5 px-1">
                         {isLLMMessage 
@@ -116,11 +118,11 @@ export function ChatMessage({ message, isOwnMessage }: ChatMessageProps) {
                     </span>
                 )}
                 <div
-                    className={`rounded-2xl px-4 py-3 ${isUserMessage
-                            ? 'bg-white/[0.05] backdrop-blur-3xl border border-white/[0.3] text-[#E0E0E0] rounded-br-md'
+                    className={`rounded-2xl px-4 py-3 w-full ${isUserMessage
+                            ? 'bg-transparent text-white rounded-br-md border border-[#fafafa]'
                             : isLLMMessage
-                                ? 'bg-transparent backdrop-blur-3xl border text-[#E0E0E0] rounded-bl-md'
-                                : 'bg-transparent border text-[#E0E0E0] rounded-bl-md'
+                                ? 'bg-transparent backdrop-blur-3xl text-[#E0E0E0] rounded-bl-md border border-gray-700'
+                                : 'bg-transparent text-[#E0E0E0] rounded-bl-md border border-gray-700'
                         }`}
                 >
                     <div className="text-base break-words">

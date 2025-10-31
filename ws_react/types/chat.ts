@@ -13,6 +13,10 @@ export interface ChatMessage {
     message: string;
     created_at: string;
     chat_users?: ChatUser;
+    // Campos adicionais para mensagens LLM
+    isLLM?: boolean;
+    provider?: string;
+    isError?: boolean;
 }
 
 export interface ChatSession {
