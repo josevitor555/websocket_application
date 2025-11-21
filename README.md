@@ -5,7 +5,7 @@ Este é um sistema completo de chat em tempo real com backend em Node.js e front
 > [!Note]
 > Observação: Embora o sistema suporte diversos modelos de IA conforme detalhado na seção "Modelos de Linguagem Disponíveis", o modelo Gemma é utilizado como padrão para testes iniciais devido às restrições de quota de outros provedores. A arquitetura foi projetada para facilitar a integração de novos modelos conforme a evolução do projeto.
 
-> [!Warning]
+> [!Note]
 > Observação: O sistema de debate e o modo criativo ainda estão em desenvolvimento e algumas funcionalidades do MVP podem não estar completamente implementadas. Os recursos estão sendo desenvolvidos gradualmente com foco inicial na funcionalidade básica de chat com LLMs. Novas funcionalidades serão adicionadas em atualizações futuras.
 
 ---
