@@ -136,7 +136,7 @@ O sistema oferece suporte a diversos modelos de linguagem distribuídos em difer
 3. Configure as variáveis de ambiente no arquivo `.env`:
    - `SUPABASE_URL`: URL do seu projeto Supabase
    - `SUPABASE_SERVICE_ROLE_KEY`: Chave de serviço do Supabase
-   - `GOOGLE_AI_API_KEY`: Chave de API do Google AI (para integração com Gemini)
+   - `GOOGLE_AI_API_KEY`: Chave de API do Google AI (para integração com seus modelos)
 
 4. Inicie o servidor:
    ```bash
