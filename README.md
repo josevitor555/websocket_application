@@ -178,4 +178,4 @@ Para informações mais detalhadas sobre cada componente do sistema, consulte os
 
 ## Licença
 
-Este projeto é destinado apenas para fins educacionais e demonstração de conceitos técnicos.
+Este projeto é para o Centelha.
