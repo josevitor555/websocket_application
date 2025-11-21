@@ -186,4 +186,8 @@ Para informações mais detalhadas sobre cada componente do sistema, consulte os
 
 ## Licença
 
-Este projeto é para o Centelha.
+Este projeto é para o Programa Centelha.
+
+---
+
+Landing Page do projeto: https://landingpage-czcy.onrender.com/
