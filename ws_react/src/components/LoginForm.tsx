@@ -74,7 +74,18 @@ export function LoginForm() {
                 variants={fadeInVariants}
             >
                 <Spline
-                    scene="https://prod.spline.design/Cfb4o-fpeVAWH4Px/scene.splinecode"
+
+                    // Animation 1
+                    // scene="https://prod.spline.design/Cfb4o-fpeVAWH4Px/scene.splinecode"
+
+                    // Animaion 2
+                    // scene="https://prod.spline.design/FZr27GTkap6Xxhhk/scene.splinecode"
+
+                    // Animation 3
+                    // scene="https://prod.spline.design/yFZqCUg6d6rMyHA6/scene.splinecode"
+
+                    // Animation 4
+                    scene="https://prod.spline.design/gzZ-hHMnM4BvfY2y/scene.splinecode"
                 />
             </motion.div>
             <motion.div 
