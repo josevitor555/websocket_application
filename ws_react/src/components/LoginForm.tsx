@@ -4,6 +4,7 @@ import { motion, easeOut } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import Spline from '@splinetool/react-spline';
 
 export function LoginForm() {
     const { login, loading, error } = useAuth();
@@ -52,10 +53,32 @@ export function LoginForm() {
         }
     };
 
+    // Fade-in animation variants for Spline and form container
+    const fadeInVariants = {
+        hidden: { opacity: 0 },
+        visible: { 
+            opacity: 1,
+            transition: { 
+                duration: 1,
+                ease: easeOut
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#0f0f10] flex items-center justify-center px-4">
+            <motion.div
+                className="absolute inset-0 z-0"
+                initial="hidden"
+                animate="visible"
+                variants={fadeInVariants}
+            >
+                <Spline
+                    scene="https://prod.spline.design/Cfb4o-fpeVAWH4Px/scene.splinecode"
+                />
+            </motion.div>
             <motion.div 
-                className="bg-transparent rounded-2xl p-8 w-full max-w-md border border-[#2A2A2A]"
+                className="backdrop-blur-xl bg-white/5 rounded-2xl p-8 w-full max-w-md border border-white/10 relative z-10"
                 initial="hidden"
                 animate="visible"
                 variants={containerVariants}
@@ -102,7 +125,7 @@ export function LoginForm() {
                             id="username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#1c1c1f] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#E0E0E0] focus:outline-none"
+                            className="w-full px-4 py-3 bg-transparent border border-white/20 rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#E0E0E0] focus:outline-none backdrop-blur-sm"
                             placeholder="usuario123"
                             required
                             disabled={loading}
@@ -118,7 +141,7 @@ export function LoginForm() {
                             id="displayName"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#1c1c1f] border border-[#2A2A2A] rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#E0E0E0] focus:outline-none"
+                            className="w-full px-4 py-3 bg-transparent border border-white/20 rounded-lg text-[#E0E0E0] placeholder-[#A0A0A0] focus:border-[#E0E0E0] focus:outline-none backdrop-blur-sm"
                             placeholder="Seu Nome para Exibição no Chat"
                             required
                             disabled={loading}
