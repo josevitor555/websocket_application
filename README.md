@@ -2,10 +2,10 @@
 
 Este é um sistema completo de chat em tempo real com backend em Node.js e frontend em React, utilizando WebSocket (Socket.IO) para comunicação em tempo real e integração com Supabase para autenticação e banco de dados. O sistema oferece integração com diversas LLMs (Large Language Models) distribuídas entre diferentes provedores, permitindo aos usuários acessar uma ampla variedade de modelos conforme seu plano de assinatura.
 
-> [Warning]
+> [!Warning]
 > Observação: Integramos somente o Gemma para fins de teste, pois outros modelos de IA requerem usos exclusivos de quota, por isso optamos pelo Gemma. Em atualizações futuras, integraremos outros modelos de IA para o sistema de debate e criações multimodais.
 
-> [Warning]
+> [!Warning]
 > Observação2: O sistema de debate ainda não cumpriu com todas as funcionalidades do MVP, pois como dissemos anteriormente - ele está em modo desenvolvimento, os recursos estão sendo implementados gradualmente.
 
 ---
