@@ -48,8 +48,8 @@ export const llmList: LLM[] = [
         logoUrl: 'https://images.seeklogo.com/logo-png/62/1/google-gemini-icon-logo-png_seeklogo-623016.png'
     },
     {
-        id: 'gemini-2.5-pro',
-        name: 'Gemini 2.5 Pro',
+        id: 'gemini-3-pro',
+        name: 'Gemini 3 Pro',
         company: 'Google',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
@@ -71,7 +71,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Disponível para uso',
         isSelected: false,
-        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
+        logoUrl: 'https://st5.depositphotos.com/32755884/69707/v/450/depositphotos_697076598-stock-illustration-chatgpt-sign-artificial-intelligence-chatbot.jpg'
     },
     
     // OpenAI - PRO Plan Models (Marked as unavailable for Free plan)
@@ -81,7 +81,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
+        logoUrl: 'https://st5.depositphotos.com/32755884/69707/v/450/depositphotos_697076598-stock-illustration-chatgpt-sign-artificial-intelligence-chatbot.jpg'
     },
     {
         id: 'gpt-4o',
@@ -89,7 +89,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
+        logoUrl: 'https://st5.depositphotos.com/32755884/69707/v/450/depositphotos_697076598-stock-illustration-chatgpt-sign-artificial-intelligence-chatbot.jpg'
     },
     {
         id: 'gpt-o4-mini',
@@ -97,7 +97,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
+        logoUrl: 'https://st5.depositphotos.com/32755884/69707/v/450/depositphotos_697076598-stock-illustration-chatgpt-sign-artificial-intelligence-chatbot.jpg'
     },
     {
         id: 'gpt-5-nano',
@@ -105,7 +105,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
+        logoUrl: 'https://st5.depositphotos.com/32755884/69707/v/450/depositphotos_697076598-stock-illustration-chatgpt-sign-artificial-intelligence-chatbot.jpg'
     },
     {
         id: 'gpt-5-pro',
@@ -113,7 +113,7 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
+        logoUrl: 'https://st5.depositphotos.com/32755884/69707/v/450/depositphotos_697076598-stock-illustration-chatgpt-sign-artificial-intelligence-chatbot.jpg'
     },
     {
         id: 'sora-2',
@@ -121,17 +121,17 @@ export const llmList: LLM[] = [
         company: 'OpenAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png'
+        logoUrl: 'https://st5.depositphotos.com/32755884/69707/v/450/depositphotos_697076598-stock-illustration-chatgpt-sign-artificial-intelligence-chatbot.jpg'
     },
 
-    // XAI - All models marked as unavailable for Free plan
+    // XAI
     {
         id: 'grok-4-fast-reasoning',
         name: 'Grok 4 Fast Reasoning',
         company: 'xAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s'
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsNMEGA9ZtsnsvAt6uW7SYsf0JHhMBEkfADg&s'
     },
     {
         id: 'grok-4-fast-non-reasoning',
@@ -139,7 +139,7 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s'
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsNMEGA9ZtsnsvAt6uW7SYsf0JHhMBEkfADg&s'
     },
     {
         id: 'grok-code-fast-1',
@@ -147,15 +147,15 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s'
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsNMEGA9ZtsnsvAt6uW7SYsf0JHhMBEkfADg&s'
     },
     {
         id: 'grok-4',
         name: 'Grok-4',
         company: 'xAI',
-        description: 'Indisponível para uso - Apenas no plano PRO',
+        description: 'Disponível para uso',
         isSelected: false,
-        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s'
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsNMEGA9ZtsnsvAt6uW7SYsf0JHhMBEkfADg&s'
     },
     {
         id: 'grok-3',
@@ -163,7 +163,7 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s'
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsNMEGA9ZtsnsvAt6uW7SYsf0JHhMBEkfADg&s'
     },
     {
         id: 'grok-3-mini',
@@ -171,7 +171,7 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s'
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsNMEGA9ZtsnsvAt6uW7SYsf0JHhMBEkfADg&s'
     },
     {
         id: 'grok-2-image',
@@ -179,7 +179,33 @@ export const llmList: LLM[] = [
         company: 'xAI',
         description: 'Indisponível para uso - Apenas no plano PRO',
         isSelected: false,
-        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOv3K6RevHQCscoWPa2BvxKTq-9ygcQ4mhRA&s'
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsNMEGA9ZtsnsvAt6uW7SYsf0JHhMBEkfADg&s'
+    },
+
+    // Anthropic - Claude Models
+    {
+        id: 'claude-opus-4.1',
+        name: 'Claude Opus 4.1',
+        company: 'Anthropic',
+        description: 'Disponível para uso',
+        isSelected: false,
+        logoUrl: 'https://images.seeklogo.com/logo-png/55/1/claude-logo-png_seeklogo-554534.png'
+    },
+    {
+        id: 'claude-sonnet-4.5',
+        name: 'Claude Sonnet 4.5',
+        company: 'Anthropic',
+        description: 'Indisponível para uso - Apenas no plano PRO',
+        isSelected: false,
+        logoUrl: 'https://images.seeklogo.com/logo-png/55/1/claude-logo-png_seeklogo-554534.png'
+    },
+    {
+        id: 'claude-haiku-4.5',
+        name: 'Claude Haiku 4.5',
+        company: 'Anthropic',
+        description: 'Indisponível para uso - Apenas no plano PRO',
+        isSelected: false,
+        logoUrl: 'https://images.seeklogo.com/logo-png/55/1/claude-logo-png_seeklogo-554534.png'
     }
 ];
 

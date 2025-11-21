@@ -32,7 +32,7 @@ async function applyMigrations() {
     if (providersError) {
       console.error('Erro ao verificar tabela llm_providers:', providersError);
     } else {
-      console.log('✓ Tabela llm_providers criada com sucesso!');
+      console.log('Tabela llm_providers criada com sucesso!');
     }
     
     const { data: interactionsTable, error: interactionsError } = await supabase

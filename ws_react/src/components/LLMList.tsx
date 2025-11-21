@@ -99,15 +99,13 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                     }}
                   >
                     <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center overflow-hidden">
+                      <div className="w-10 h-10 rounded-full bg-transparent flex items-center justify-center overflow-hidden">
                         <img
                           src={llm.logoUrl}
                           alt={`${llm.name} logo`}
-                          className="w-6 h-6 object-contain"
+                          className="w-8 h-8 object-contain"
                           onError={(e) => {
-                            // Em caso de erro no carregamento da imagem, definir um fallback
                             const target = e.target as HTMLImageElement;
-                            // Criar um SVG fallback com as iniciais do nome do modelo
                             const initials = llm.name.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
                             target.outerHTML = `
                               <div class="w-6 h-6 rounded-full bg-[#2A2A2A] flex items-center justify-center">
@@ -122,18 +120,18 @@ export function LLMList({ onLLMSelect, isInModal = false }: LLMListProps) {
                         <FontAwesomeIcon icon={faCircle} className="w-3 h-3 text-[#22C55E] absolute bottom-0 right-0" />
                       )}
                       {llm.description.includes('Indisponível') && (
-                        <FontAwesomeIcon icon={faLock} className="w-3 h-3 text-[#dfddeb] absolute bottom-0 right-0" />
+                        <FontAwesomeIcon icon={faLock} className="w-3 h-3 text-[#fafafa] absolute bottom-0 right-0" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[#E0E0E0] font-medium text-base truncate">
+                      <p className="text-[#fafafa] font-medium text-base truncate">
                         {llm.name}
                       </p>
                       <p className={`text-sm truncate ${llm.description.includes('Indisponível')
-                          ? 'text-[#dfddeb]'
+                          ? 'text-[#fafafa]'
                           : llm.description.includes('indisponível')
-                            ? 'text-[#dfddeb]'
-                            : 'text-[#A0A0A0]'
+                            ? 'text-[#fafafa]'
+                            : 'text-[#fafafa]'
                         }`}>
                         {llm.description}
                       </p>

@@ -1,4 +1,4 @@
-import { llmMessageService } from '../services/llmMessageService';
+// import { llmMessageService } from '../services/llmMessageService';
 
 interface ConnectionStatusProps {
   isConnected: boolean;

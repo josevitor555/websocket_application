@@ -89,6 +89,15 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
+              <div className="mb-4">
+                <h5 className="text-[#A0A0A0] font-semibold mb-2">Anthropic</h5>
+                <div className="flex flex-wrap gap-2">
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
+                    Claude Opus 4.1
+                  </button>
+                </div>
+              </div>
+
               <div className="flex justify-between items-center py-3 border-b border-[#2A2A2A]">
                 <span className="text-[#A0A0A0]">Modo Arena</span>
                 <span className="text-xs px-2.5 py-1 rounded-full bg-[#121212] text-[#E0E0E0] font-semibold">Limitado</span>
@@ -159,6 +168,9 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
                   <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemini-2.5-pro
                   </button>
+                  <button className="px-3 py-1 bg-[#665edb] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
+                    gemini-3-pro
+                  </button>
                   <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     gemma-3-1b-it
                   </button>
@@ -218,6 +230,21 @@ const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose }) => {
                   </button>
                   <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
                     Grok 2 Image 1212
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h5 className="text-[#A0A0A0] font-semibold mb-2">Anthropic</h5>
+                <div className="flex flex-wrap gap-2">
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
+                    Claude Opus 4.1
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
+                    Claude Sonnet 4.5
+                  </button>
+                  <button className="px-3 py-1 bg-[#121212] text-[#A0A0A0] text-sm rounded-full border border-[#2A2A2A] hover:bg-[#2A2A2A] transition-colors">
+                    Claude Haiku 4.5
                   </button>
                 </div>
               </div>

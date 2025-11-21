@@ -1,97 +1,181 @@
-# Projeto de Chat em Tempo Real com WebSocket
+# Sistema de Chat em Tempo Real com WebSocket
 
-## Visão Geral do Projeto
+Este é um sistema completo de chat em tempo real com backend em Node.js e frontend em React, utilizando WebSocket (Socket.IO) para comunicação em tempo real e integração com Supabase para autenticação e banco de dados.
 
-Este é um sistema de chat em tempo real completo com frontend em React/TypeScript e backend em Node.js, utilizando WebSockets para comunicação bidirecional instantânea. O projeto integra tecnologias modernas como Vite, Socket.IO, Supabase e Tailwind CSS para criar uma experiência de usuário fluida e responsiva.
+## Estrutura do Projeto
 
----
+```
+websocket/
+├── backend/                 # Backend do sistema de chat
+│   ├── controllers/         # Lógica da aplicação
+│   ├── db/                  # Configuração do banco de dados
+│   ├── middleware/          # Interceptadores de requisição
+│   ├── model/               # Definição da estrutura dos dados
+│   ├── route/               # Definição dos caminhos da API
+│   ├── services/            # Serviços externos (ex: integração com LLMs)
+│   ├── utils/               # Funções auxiliares reutilizáveis
+│   ├── public/              # Arquivos públicos
+│   ├── server.js            # Arquivo principal do servidor
+│   └── README.md            # Documentação do backend
+├── ws_react/                # Frontend do sistema de chat
+│   ├── src/                 # Código-fonte do frontend
+│   ├── supabase/            # Configurações do Supabase
+│   ├── public/              # Arquivos estáticos
+│   └── README.md            # Documentação do frontend
+└── README.md                # Documentação principal do projeto
+```
 
-### Requisitos Funcionais
+## Tecnologias Utilizadas
 
-1. **Autenticação de Usuários**
-   - Login com nome de usuário e nome de exibição
-   - Gerenciamento de sessões com tokens
-   - Armazenamento local de credenciais
+### Backend
+- **Node.js** com **Express** para o servidor HTTP
+- **Socket.IO** para comunicação em tempo real via WebSocket
+- **Supabase** para autenticação e banco de dados
+- **ES6 Modules** para organização do código
 
-2. **Chat em Tempo Real**
-   - Envio e recebimento instantâneo de mensagens
-   - Indicador de digitação ("usuário está digitando...")
-   - Lista de usuários online em tempo real
+### Frontend
+- **React** com **TypeScript** para construção da interface
+- **Vite** como bundler e servidor de desenvolvimento
+- **Tailwind CSS** para estilização
+- **Socket.IO Client** para comunicação em tempo real
+- **Lucide React** para ícones
 
-3. **Funcionalidades do Chat**
-   - Histórico de mensagens
-   - Status de conexão WebSocket
-   - Reconexão automática em caso de falhas
-   - Interface responsiva e moderna
+## Funcionalidades Principais
 
----
+### Chat em Tempo Real
+- Envio e recebimento de mensagens instantâneas entre usuários
+- Indicador de digitação ("usuário está digitando...")
+- Lista de usuários online em tempo real
+- Histórico de mensagens
 
-### Requisitos Não Funcionais
+### Autenticação
+- Login de usuários com nome de usuário e nome de exibição
+- Gerenciamento de sessões com tokens
+- Armazenamento local de credenciais
 
-1. **Desempenho**
-   - Baixa latência nas mensagens (menos de 100ms)
-   - Reconexão automática com até 10 tentativas
-   - Interface responsiva com atualizações em tempo real
+### Integração com LLM
+- Suporte à integração com modelos de linguagem (como Gemini)
+- Interface para interagir com assistentes virtuais
 
-2. **Segurança**
-   - Autenticação baseada em tokens
-   - Validação de sessões no servidor
-   - Proteção contra mensagens mal formadas
+### Modelos de Linguagem Disponíveis
 
-3. **Confiabilidade**
-   - Tratamento de erros em todas as operações
-   - Persistência de mensagens no banco de dados
-   - Manutenção de status de usuários online/offline
+O sistema oferece suporte a diversos modelos de linguagem distribuídos em diferentes provedores. Os modelos disponíveis variam conforme o plano de assinatura:
 
-4. **Usabilidade**
-   - Interface intuitiva com design moderno
-   - Feedback visual para ações do usuário
-   - Indicadores claros de status de conexão
+#### Plano Free
 
----
+**Google:**
+- gemma-3-1b-it
+- gemini-1.5-flash
+- gemini-2.5-flash
 
-### Implementação dos WebSockets
+**Open AI:**
+- GPT-5
 
-#### 1. WebSocket do Vite (HMR - Hot Module Replacement)
+**Anthropic:**
+- Claude Opus 4.1
 
-O Vite utiliza seu próprio WebSocket na porta padrão do servidor de desenvolvimento (5173) para:
-- Atualizações de módulo em tempo de desenvolvimento
-- Recarregamento automático de componentes modificados
-- Comunicação entre o servidor de desenvolvimento e o navegador
+#### Plano PRO
 
-Este WebSocket opera exclusivamente para funcionalidades de desenvolvimento e não interfere no funcionamento da aplicação em produção.
+**Google:**
+- gemini-1.5-flash
+- gemini-2.5-flash
+- gemini-2.5-flash Image (Nano Banana)
+- gemini-2.5-pro
+- gemini-3-pro
+- gemma-3-1b-it
+- Google Veo 3.1
 
-#### 2. WebSocket do Chat (Comunicação em Tempo Real)
+**Open AI:**
+- GPT-4.1
+- GPT 4o
+- GPT-5
+- GPT o4 mini
+- GPT 5 Nano
+- GPT 5 Pro
+- Sora 2
 
-Implementado com Socket.IO tanto no frontend quanto no backend:
+**XAI:**
+- Grok 4 Fast Reasoning
+- Grok 4 Fast Non Reasoning
+- Grok Code Fast 1
+- Grok-4
+- Grok-3
+- Grok 3 Mini
+- Grok 2 Image 1212
 
-**Backend (Node.js + Socket.IO):**
-- Servidor WebSocket rodando na porta 3001
-- Autenticação de usuários via tokens de sessão
-- Armazenamento em memória de usuários conectados
-- Eventos para mensagens, digitação e status de usuários
-- Integração com banco de dados Supabase para persistência
+**Anthropic:**
+- Claude Opus 4.1
+- Claude Sonnet 4.5
+- Claude Haiku 4.5
 
-**Frontend (React + Socket.IO Client):**
-- Conexão dedicada ao backend na porta 3001
-- Tratamento de eventos de conexão/desconexão
-- Interface em tempo real para mensagens e usuários
-- Indicador de status de conexão com reconexão automática
+## Pré-requisitos
 
----
+- Node.js (versão 14 ou superior)
+- npm ou yarn
+- Conta no Supabase
+- Chave de API do Google AI (para integração com Gemini, se necessário)
 
-### Coexistência dos WebSockets
+## Configuração Inicial
 
-Os dois WebSockets coexistem sem conflitos porque:
-1. **Portas diferentes**: Vite HMR usa a porta 5173 e o chat usa a porta 3001
-2. **Propósitos distintos**: Vite para desenvolvimento e chat para comunicação em tempo real
-3. **Bibliotecas separadas**: Cada WebSocket usa sua própria implementação e contexto
-4. **Escopos isolados**: Não compartilham namespaces ou eventos
+### Backend
 
-Essa arquitetura permite desenvolver e executar a aplicação de chat com todas as vantagens do HMR do Vite sem interferir na funcionalidade principal de comunicação em tempo real.
+1. Navegue até o diretório do backend:
+   ```bash
+   cd backend
+   ```
 
----
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
 
-### Hashtags
+3. Configure as variáveis de ambiente no arquivo `.env`:
+   - `SUPABASE_URL`: URL do seu projeto Supabase
+   - `SUPABASE_SERVICE_ROLE_KEY`: Chave de serviço do Supabase
+   - `GOOGLE_AI_API_KEY`: Chave de API do Google AI (para integração com Gemini)
 
-#ChatEmTempoReal #WebSocket #NodeJS #React #TypeScript #Vite #SocketIO #Supabase #DesenvolvimentoWeb #Programação #Frontend #Backend #AplicaçãoWeb #ComunicaçãoEmTempoReal #Tecnologia #DesenvolvimentoDeSoftware #WebDevelopment #JavaScript #FullStack #ProjetoDeChat #HMR #HotModuleReplacement #TailwindCSS #DesenvolvimentoFrontend #DesenvolvimentoBackend
+4. Inicie o servidor:
+   ```bash
+   npm run dev
+   ```
+
+### Frontend
+
+1. Navegue até o diretório do frontend:
+   ```bash
+   cd ws_react
+   ```
+
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+
+3. Configure as variáveis de ambiente no arquivo `.env`:
+   - `VITE_SUPABASE_URL`: URL do seu projeto Supabase
+   - `VITE_SUPABASE_ANON_KEY`: Chave pública do Supabase
+   - `VITE_BACKEND_URL`: URL do backend (padrão: http://localhost:3001)
+
+4. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+
+## Documentação Detalhada
+
+Para informações mais detalhadas sobre cada componente do sistema, consulte os READMEs específicos:
+
+- [Documentação do Backend](backend/README.md)
+- [Documentação do Frontend](ws_react/README.md)
+
+## Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
+
+## Licença
+
+Este projeto é destinado apenas para fins educacionais e demonstração de conceitos técnicos.
